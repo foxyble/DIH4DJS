@@ -12,7 +12,9 @@ class TestCommand extends SlashCommand {
      * @param {Client} client The discord.js client
      * @param {ChatInputCommandInteraction} interaction 
      */
-    execute(client, interaction) { }
+    execute(client, interaction) {
+        interaction.reply({ content: "test command", ephemeral: true });
+    }
 }
 
 module.exports = TestCommand;
