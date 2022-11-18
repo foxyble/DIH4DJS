@@ -1,6 +1,5 @@
 require('dotenv').config();
 
-const { join } = require('node:path');
 const { Client, IntentsBitField } = require("discord.js");
 const { DIH4DJSBuilder } = require("../dist");
 
@@ -17,7 +16,7 @@ const client = new Client({
 
 const dih4djs = new DIH4DJSBuilder()
     .setClient(client)
-    .setDirectory(join(__dirname, './systems'))
+    .setCommandPackages("./systems/")
     .build();
 
 client.login(process.env.TOKEN);

@@ -89,12 +89,10 @@ export namespace SlashCommand {
         }
     }
     export class SubcommandGroup extends AppCommand<ChatInputCommandInteraction, SlashCommandSubcommandGroupBuilder> {
-        private gdata: SlashCommandSubcommandGroupBuilder;
         private subcommands: Subcommand[];
 
         private constructor(data: SlashCommandSubcommandGroupBuilder, subcommands: Subcommand[]) {
-            super(null);
-            this.gdata = data;
+            super(data);
             this.subcommands = subcommands;
         }
 
@@ -114,7 +112,7 @@ export namespace SlashCommand {
          * @returns The correspondng {@link SlashCommandSubcommandGroupBuilder}.
          */
         public getData(): SlashCommandSubcommandGroupBuilder {
-            return this.gdata;
+            return this.getCommandData();
         }
 
         /**

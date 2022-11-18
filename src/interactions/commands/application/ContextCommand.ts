@@ -6,13 +6,9 @@ import type {
 
 import BaseCommand from "./BaseCommand";
 
-export abstract class ContextCommand<E> extends BaseCommand<E, ContextMenuCommandBuilder> {
-    constructor() {
-        super(null);
-    }
-}
+export abstract class ContextCommand<E> extends BaseCommand<E, ContextMenuCommandBuilder> {}
 
-export declare namespace ContextCommand {
+export namespace ContextCommand {
     export abstract class User extends ContextCommand<UserContextMenuCommandInteraction> {}
     export abstract class Message extends ContextCommand<MessageContextMenuCommandInteraction> {}
 }

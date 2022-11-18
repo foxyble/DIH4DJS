@@ -6,7 +6,7 @@ import RestrictedCommand from "../RestrictedCommand";
 export default abstract class AppCommand<E, T> extends RestrictedCommand implements ExecutableCommand<E> {
     private data!: T;
 
-    constructor(data: any) {
+    constructor(data: T) {
         super();
         this.data = (data as T);
     }

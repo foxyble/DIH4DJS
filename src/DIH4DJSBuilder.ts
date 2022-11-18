@@ -1,37 +1,18 @@
 import type { Client } from "discord.js";
 
-import fs from "node:fs";
-import { join } from "node:path";
-import BaseListener from "./structures/BaseListener";
 import DIH4DJS from ".";
+import DIH4DJSConfig from "./config/DIH4DJSConfig";
 
 /**
  * Main builder for creating the interaction handler
  */
 export default class DIH4DJSBuilder {
-    private client!: Client;
-    private pkgDir: string = "";
+    private config: DIH4DJSConfig;
+    private client: Client;
 
-    public build(): DIH4DJS {
-        this.registerListeners("./listeners");
-        return new DIH4DJS(this.pkgDir, this.client);
-    }
-
-    private async registerListeners(dir: string = "") {
-        const basePath = join(__dirname, dir);
-        const files = fs.readdirSync(basePath).filter(f => f.endsWith(".js"));
-        for (const file of files) {
-            const filePath = join(basePath, file);
-            var { default: Listener } = await import(filePath);
-            try {
-                const l = new Listener();
-                if(l instanceof BaseListener) {
-                    this.client.on(l.getName(), l.execute.bind(l, this.client));
-                }
-            } catch(err) {
-                console.log(err);
-            }
-        }
+    constructor(client: Client) {
+        this.config = new DIH4DJSConfig();
+        this.client = client;
     }
 
     /**
@@ -39,16 +20,43 @@ export default class DIH4DJSBuilder {
      * @param client The discord.js client object
      */
     public setClient(client: Client): DIH4DJSBuilder {
-        this.client = client;
-        return this;
+        return new DIH4DJSBuilder(client);
     }
 
     /**
      * Set to base command and interaction handler directory.
-     * @param dir The directory where commands and interaction handlers are
+     * @param packages The directory where commands and interaction handlers are
      */
-    public setDirectory(dir: string): DIH4DJSBuilder {
-        this.pkgDir = dir;
+    public setCommandPackages(...packages: string[]): DIH4DJSBuilder {
+        this.config.setCommandPackages(packages);
         return this;
+    }
+
+    /**
+     * Sets the testing guild's id.
+     * @param guildId The testing guild id.
+     */
+    public setTestingGuild(guildId: string) {
+        this.config.setTestingGuild(guildId);
+        return this;
+    }
+
+    /**
+     * 
+     * @returns 
+     */
+    public disableUnknownCommandDeletion() {
+        this.config.setDeleteUnknownCommands(false);
+        return this;
+    }
+
+    public build(): DIH4DJS {
+        for(const pkg of this.config.getCommandPackages()) {
+            if(pkg.length === 0) {
+                throw new Error("Commands package cannot be empty or blank");
+            }
+        }
+        this.config.setClient(this.client);
+        return new DIH4DJS(this.config);
     }
 }

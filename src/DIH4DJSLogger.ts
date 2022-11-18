@@ -1,11 +1,11 @@
 import chalk from 'chalk';
 
 enum LoggerLevel {
-    INFO,
-    ERROR,
-    TRACE,
-    DEBUG,
-    WARN
+    INFO = "INFO",
+    ERROR = "ERROR",
+    TRACE = "TRACE",
+    DEBUG = "DEBUG",
+    WARN = "WARN"
 }
 
 export default class DIH4DJSLogger {
@@ -15,7 +15,7 @@ export default class DIH4DJSLogger {
     
     private static async log0(msg: any, level: LoggerLevel) {
         var format: string = `(%date%) [%level%]: ${msg}`
-            .replace("%date%", chalk`{yellow ${Date.now().toLocaleString()}}`);
+            .replace("%date%", chalk`{yellow ${new Date(Date.now()).toUTCString()}}`);
         switch(level) {
             case LoggerLevel.DEBUG:
                 this.log(format.replace("%level%", chalk.blueBright(level)));

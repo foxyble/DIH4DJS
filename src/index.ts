@@ -1,7 +1,7 @@
 /**
  * Types
  */
-import type { Client } from "discord.js";
+import { Client, Events } from "discord.js";
 import type ExecutableCommand from "./interactions/commands/ExecutableCommand";
 /**
  * Interactions
@@ -18,53 +18,108 @@ import { SlashCommand } from "./interactions/commands/application/SlashCommand";
  */
 import CommandUtils from "./utils/CommandUtils";
 import ComponentIdBuilder from "./utils/ComponentIdBuilder";
+import Pair from "./utils/Pair";
 /**
  * Misc
  */
 import DIH4DJSBuilder from "./DIH4DJSBuilder";
 import InteractionHandler from "./InteractionHandler";
+import type DIH4DJSConfig from "./config/DIH4DJSConfig";
+
+import fs from 'node:fs';
+import path from 'node:path';
+import EventListener from "./listeners/abstract/EventListener";
 
 export default class DIH4DJS {
-    private static instance: DIH4DJS|null = null;
-    private static registrationType: RegistrationType;
+    private static registrationType: RegistrationType = RegistrationType.GLOBAL;
 
-    public static getInstance(): DIH4DJS { return this.instance! }
-
-    static {
-        this.registrationType = RegistrationType.GLOBAL;
-    }
-
-    private client: Client;
-    private pkgDir: string = "";
+    private config: DIH4DJSConfig;
 
     private handler: InteractionHandler;
 
-    constructor(pkgDir: string, client: Client) {
-        DIH4DJS.instance = this;
-
-        this.client = client;
-        this.pkgDir = pkgDir;
-
+    constructor(config: DIH4DJSConfig) {
+        this.validateConfig(config);
+        this.config = config;
         /**
          * Creates a new {@link InteractionHandler}
          */
         this.handler = new InteractionHandler(this);
+        this.registerEventListeners();
+    }
+
+    private async registerEventListeners() {
+        var client = this.config.getClient();
+        const basePath = path.join(__dirname, './listeners/');
+        const files = fs.readdirSync(basePath).filter(f => f.endsWith(".js"));
+        for (const file of files) {
+            const filePath = path.join(basePath, file);
+            var { default: Listener } = await import(filePath);
+            try {
+                const l = new Listener();
+                if(l instanceof EventListener) {
+                    if(l.getEventName() === Events.ClientReady) {
+                        client.once(l.getEventName(), l.onExecute.bind(l, this));
+                    } else {
+                        client.on(l.getEventName(), l.onExecute.bind(l, this));
+                    }
+                }
+            } catch(reason: any) {throw new Error(reason)}
+        }
+    }
+
+    /**
+     * Gets the {@link DIH4DJSConfig} for the client instance.
+     * @returns {DIH4DJSConfig}.
+     */
+    public getConfig(): DIH4DJSConfig {
+        return this.config;
     }
 
     /**
      * The Interaction handler instance
-     * @returns {@link InteractionHandler}
+     * @returns {InteractionHandler}
      */
     public getInteractionHandler(): InteractionHandler {
         return this.handler;
     }
 
-    public getClient(): Client {
-        return this.client;
+    /**
+     * Register all commands and interactions.
+     */
+    public registerInteractions() {
+        this.handler.registerInteractions();
     }
 
-    public getPackageDir(): string {
-        return this.pkgDir;
+    /**
+     * Manually register {@link SlashCommand}s.
+     * @param commands An array of commands to register
+     */
+    public addSlashCommands(...commands: SlashCommand[]) {
+        commands.forEach((c) => this.handler.slashCommands.push(c));
+    }
+
+    /**
+     * Manually register {@link ContextCommand}s.
+     * @param commands An array of commands to register
+     */
+    public addContextCommands(...commands: ContextCommand<any>[]) {
+        commands.forEach((c) => this.handler.contextCommands.push(c));
+    }
+
+    /**
+     * Gets the {@link Client} instance.
+     * @returns {Client} The client.
+     */
+    public getClient(): Client {
+        return this.config.getClient();
+    }
+
+    /**
+     * Gets the packages where all the commands are.
+     * @returns The commands packages
+     */
+    public getPackages(): string[] {
+        return this.config.getCommandPackages();
     }
 
     /**
@@ -81,7 +136,22 @@ export default class DIH4DJS {
     public static getDefaultRegistrationType(): RegistrationType {
         return this.registrationType;
     }
+
+    /**
+     * Validates the {@link DIH4DJSConfig} to all required entires are there.
+     * @param config The {@link DIH4DJSConfig}.
+     */
+    private validateConfig(config: DIH4DJSConfig) {
+        if(config.getClient() === null) {
+            throw new Error("Client instance may not be null!");
+        }
+        if(config.getCommandPackages() === null) {
+            throw new Error("Command packages may not be null!");
+        }
+    }
 }
+
+Pair
 
 export {
     /**
@@ -100,6 +170,7 @@ export {
      */
     CommandUtils,
     ComponentIdBuilder,
+    Pair,
     // ------------------
     DIH4DJSBuilder,
     InteractionHandler
