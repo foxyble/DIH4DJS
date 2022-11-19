@@ -36,8 +36,10 @@
 		// Language and Environment
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
-		"target": "ES6",
+		"lib": ["ESNext"],
+		"target": "ES2021",
 		"useDefineForClassFields": true,
-		"baseUrl": "./src/"
-    }
+		"baseUrl": "./src/",
+    },
+	"include": ["src/**/*.ts"]
 }

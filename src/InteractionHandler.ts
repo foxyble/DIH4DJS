@@ -1,5 +1,20 @@
+/**
+ * DIH4DJS is a power package to handle interactions using 
+ * the discord.js library.
+ * Copyright (C) 2022  OoP1nk
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
 import type { RestrictedCommand } from "./interactions/commands/RestrictedCommand";
-import type { DIH4DJS } from "./";
+import type { DIH4DJS } from "./index";
 
 import path from "node:path";
 import fs from "node:fs/promises";
@@ -12,7 +27,7 @@ import { DIH4DJSLogger } from "./DIH4DJSLogger";
 import { SmartQueue } from "./SmartQueue";
 import { Pair } from "./utils/Pair";
 import { ComponentIdBuilder } from "./utils/ComponentIdBuilder";
-import {
+import { 
     ApplicationCommand,
     ApplicationCommandType,
     BaseInteraction, 

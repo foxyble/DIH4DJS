@@ -1,3 +1,19 @@
+/**
+ * DIH4DJS is a power package to handle interactions using 
+ * the discord.js library.
+ * Copyright (C) 2022  OoP1nk
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
 import type { ApplicationCommand, Guild } from "discord.js";
 import type { ContextCommand } from "./interactions/commands/application/ContextCommand";
 import type { SlashCommand } from "./interactions/commands/application/SlashCommand";
@@ -35,6 +51,11 @@ export class SmartQueue {
         existing.forEach((cmd, idx) => {
             if(this.contextCommands.map((data) => cmd.name === data.getCommandData().name)
                     || this.slashCommands.map((data) => cmd.name === data.getCommandData().name)) {
+                if(global) {
+                    DIH4DJSLogger.info(prefix + "Found %s duplicate command, it will be updated: %ss"
+                    .replace("%s", cmd.type.toString())
+                    .replace("%ss", cmd.name));
+                }
                 existing.splice(idx, 1);
             }
             return;
