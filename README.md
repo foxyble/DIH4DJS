@@ -14,7 +14,7 @@ pnpm add dih4djs
 For a more indepth description on how to register commands feel free to look at the [Wiki](https://github.com/OoP1nk/DIH4DJS/wiki).
 
 ## Setting up the handler
-```javasript
+```javascript
 const { Client } = require('discord.js');
 const { DIH4DJSBuilder } = require('dih4djs');
 
