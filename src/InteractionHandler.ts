@@ -26,6 +26,7 @@ import {
     REST, 
     Routes, 
     SelectMenuInteraction, 
+    SlashCommandBuilder, 
     SlashCommandSubcommandBuilder, 
     SlashCommandSubcommandGroupBuilder, 
     UserContextMenuCommandInteraction 
@@ -117,9 +118,7 @@ export class InteractionHandler {
             globalData = new SmartQueue(globalData.getFirst(), globalData.getSecond()).checkGlobal(existing);
             if(globalData.getFirst() || globalData.getSecond()) {
                 this.upsertGlobalCommands(globalData.getFirst(), globalData.getSecond())
-                DIH4DJSLogger.info("Queued %s global command(s): %ss"
-                    .replace("%s", `${globalData.getFirst().length + globalData.getSecond().length}`)
-                    .replace("%ss", CommandUtils.getNames(globalData.getSecond(), globalData.getFirst())))
+                DIH4DJSLogger.info("Queued %s global command(s): %ss".replace("%s", `${globalData.getFirst().length + globalData.getSecond().length}`).replace("%ss", CommandUtils.getNames(globalData.getSecond(), globalData.getFirst())))
             }
         });
     }
@@ -205,14 +204,16 @@ export class InteractionHandler {
         var commandData = command.getCommandData();
         if(command.addSubcommandGroups() !== null && command.getSubcommandGroups().length !== 0) {
             this.getSubcommandGroupData(command)
-                .forEach((g) => commandData.addSubcommandGroup(g));
+                .forEach((g) => (commandData as SlashCommandBuilder).addSubcommandGroup(g));
         }
         if(command.getSubcommands() !== null && command.getSubcommands().length !== 0) {
             this.getSubcommandData(command, command.getSubcommands())
-                .forEach((s) => commandData.addSubcommand(s));
+                .forEach((s) => (commandData as SlashCommandBuilder).addSubcommand(s));
         }
         this.slashCommandIndex.set(CommandUtils.buildCommandPath(commandData.name), command);
-        DIH4DJSLogger.info("Registered command: /%s (%ss)".replace("%s", command.getCommandData().name).replace("%ss", command.getRegistrationType().toString()));
+        if(!this.dih4djs.getConfig().isLoggingDisabled()) {
+            DIH4DJSLogger.info("Registered command: /%s (%ss)".replace("%s", command.getCommandData().name).replace("%ss", command.getRegistrationType().toString()));
+        }
         return commandData;
     }
 
@@ -252,7 +253,9 @@ export class InteractionHandler {
                     commandPath = CommandUtils.buildCommandPath(command.getCommandData().name, subGroupName, subcommand.getCommandData().name);
                 }
                 this.subcommandIndex.set(commandPath, subcommand);
-                DIH4DJSLogger.info("Registered command: /%s (%ss)".replace("%s", command.getCommandData().name).replace("%ss", command.getRegistrationType().toString()));
+                if(!this.dih4djs.getConfig().isLoggingDisabled()) {
+                    DIH4DJSLogger.info("Registered command: /%s (%ss)".replace("%s", command.getCommandData().name).replace("%ss", command.getRegistrationType().toString()));
+                }
                 subDataList.push(subcommand.getCommandData());
             }
         }
@@ -287,7 +290,9 @@ export class InteractionHandler {
             DIH4DJSLogger.error("Invalid command type %t for Context Command! It will be ignored.".replace("%t", data.type));
             return null;
         }
-        DIH4DJSLogger.info("Registered context command: %s (%ss)".replace("%s", data.name).replace("%ss", command.getRegistrationType().toString()))
+        if(!this.dih4djs.getConfig().isLoggingDisabled()) {
+            DIH4DJSLogger.info("Registered context command: %s (%ss)".replace("%s", data.name).replace("%ss", command.getRegistrationType().toString()));
+        }
         return data;
     }
 

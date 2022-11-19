@@ -4,14 +4,15 @@ import {
     SlashCommandSubcommandBuilder, 
     SlashCommandSubcommandGroupBuilder,
     ApplicationCommand,
-    ApplicationCommandOptionType
+    ApplicationCommandOptionType,
+    SlashCommandSubcommandsOnlyBuilder
 } from "discord.js";
 
 import { InteractionHandler } from "../../../InteractionHandler";
 import { AppCommand } from "./AppCommand";
 import { BaseCommand } from "./BaseCommand";
 
-export abstract class SlashCommand extends BaseCommand<ChatInputCommandInteraction, SlashCommandBuilder> {
+export abstract class SlashCommand extends BaseCommand<ChatInputCommandInteraction, SlashCommandBuilder|Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">|SlashCommandSubcommandsOnlyBuilder> {
     private subcommands: SlashCommand.Subcommand[] = Array.of();
     private subcommandGroups: SlashCommand.SubcommandGroup[] = Array.of();
 

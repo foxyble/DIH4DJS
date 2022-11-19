@@ -8,7 +8,7 @@ export abstract class AppCommand<E, T> extends RestrictedCommand implements Exec
 
     constructor(data: T) {
         super();
-        this.data = (data as T);
+        this.data = data;
     }
 
     /**

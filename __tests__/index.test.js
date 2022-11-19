@@ -17,6 +17,7 @@ const client = new Client({
 const dih4djs = new DIH4DJSBuilder()
     .setClient(client)
     .setCommandPackages("./systems/")
+    .disabledCommandLogging()
     .build();
 
 client.login(process.env.TOKEN);
