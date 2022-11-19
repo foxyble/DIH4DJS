@@ -7,9 +7,6 @@
     "build": "rimraf ./source && tsc"
   },
   "main": "./source/index.js",
-  "exports": {
-    "require": "./source/index.js"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/OoP1nk/DIH4DJS.git"
