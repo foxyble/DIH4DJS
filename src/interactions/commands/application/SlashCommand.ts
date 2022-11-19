@@ -7,9 +7,9 @@ import {
     ApplicationCommandOptionType
 } from "discord.js";
 
-import InteractionHandler from "../../../InteractionHandler";
-import AppCommand from "./AppCommand";
-import BaseCommand from "./BaseCommand";
+import { InteractionHandler } from "../../../InteractionHandler";
+import { AppCommand } from "./AppCommand";
+import { BaseCommand } from "./BaseCommand";
 
 export abstract class SlashCommand extends BaseCommand<ChatInputCommandInteraction, SlashCommandBuilder> {
     private subcommands: SlashCommand.Subcommand[] = Array.of();

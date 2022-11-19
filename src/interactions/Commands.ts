@@ -5,7 +5,7 @@ import {
     ContextMenuCommandType 
 } from 'discord.js';
 
-export default class Commands {
+export class Commands {
     /**
      * Create a slash command builder.
      * @param name The command name

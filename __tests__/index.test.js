@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const { Client, IntentsBitField } = require("discord.js");
-const { DIH4DJSBuilder } = require("../dist");
+const { DIH4DJSBuilder } = require("../source");
 
 const IntentFlags = IntentsBitField.Flags;
 const client = new Client({

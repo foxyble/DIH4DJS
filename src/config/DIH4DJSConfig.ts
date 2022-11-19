@@ -1,10 +1,9 @@
 import type { Client } from "discord.js";
 
-export default class DIH4DJSConfig {
+export class DIH4DJSConfig {
     private client!: Client;
     private commandsPackages: string[] = Array.of();
     private registerOnReady: boolean = true;
-    private deleteUnknownCommands: boolean = true;
     private testingGuild: string = "";
 
 
@@ -59,22 +58,6 @@ export default class DIH4DJSConfig {
      */
     public setRegisterOnReady(registerOnReady: boolean) {
         this.registerOnReady = registerOnReady;
-    }
-
-    /**
-     * True is unknown commands should be deleted and false if not.
-     * @returns True if they are getting deleted, otherwise false.
-     */
-    public isDeleteUnknownCommands(): boolean {
-        return this.deleteUnknownCommands;
-    }
-
-    /**
-     * True is unknown commands should be deleted and false if not.
-     * @param deleteUnknownCommands True if they are getting deleted, otherwise false.
-     */
-    public setDeleteUnknownCommands(deleteUnknownCommands: boolean) {
-        this.deleteUnknownCommands = deleteUnknownCommands;
     }
 
     /**

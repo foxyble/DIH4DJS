@@ -1,5 +1,5 @@
 import { Collection } from "discord.js";
-import ComponentHandler from "../ComponentHandler";
+import { ComponentHandler } from "../ComponentHandler";
 
 /**
  * Represents a restricted command.

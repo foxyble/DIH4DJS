@@ -1,37 +1,15 @@
-/**
- * Types
- */
-import { Client, Events } from "discord.js";
-import type ExecutableCommand from "./interactions/commands/ExecutableCommand";
-/**
- * Interactions
- */
-import Commands from "./interactions/Commands";
-import RestrictedCommand from "./interactions/commands/RestrictedCommand";
-import AppCommand from "./interactions/commands/application/AppCommand";
-import BaseCommand from "./interactions/commands/application/BaseCommand";
-import { ContextCommand } from "./interactions/commands/application/ContextCommand";
 import { RegistrationType } from "./interactions/commands/application/RegistrationType";
-import { SlashCommand } from "./interactions/commands/application/SlashCommand";
-/**
- * Utils
- */
-import CommandUtils from "./utils/CommandUtils";
-import ComponentIdBuilder from "./utils/ComponentIdBuilder";
-import Pair from "./utils/Pair";
-/**
- * Misc
- */
-import DIH4DJSBuilder from "./DIH4DJSBuilder";
-import InteractionHandler from "./InteractionHandler";
-import type DIH4DJSConfig from "./config/DIH4DJSConfig";
-
-import fs from 'node:fs';
+import { InteractionHandler } from "./InteractionHandler";
 import path from 'node:path';
+import fs from 'fs';
+import type { DIH4DJSConfig } from "./config/DIH4DJSConfig";
 import EventListener from "./listeners/abstract/EventListener";
+import { Client, Events } from "discord.js";
+import type { SlashCommand } from "./interactions/commands/application/SlashCommand";
+import type { ContextCommand } from "./interactions/commands/application/ContextCommand";
 
-export default class DIH4DJS {
-    private static registrationType: RegistrationType = RegistrationType.GLOBAL;
+export class DIH4DJS {
+    private static registrationType: RegistrationType = RegistrationType.Global;
 
     private config: DIH4DJSConfig;
 
@@ -122,6 +100,10 @@ export default class DIH4DJS {
         return this.config.getCommandPackages();
     }
 
+    public testingGuild() {
+        return this.config.getTestingGuild();
+    }
+
     /**
      * Set the default registration type
      * @param type The {@link RegistrationType}.
@@ -151,27 +133,20 @@ export default class DIH4DJS {
     }
 }
 
-Pair
-
-export {
-    /**
-     * Export Interactions
-     */
-    Commands,
-    ExecutableCommand,
-    RestrictedCommand,
-    AppCommand,
-    BaseCommand,
-    ContextCommand,
-    RegistrationType,
-    SlashCommand,
-    /**
-     * Utils
-     */
-    CommandUtils,
-    ComponentIdBuilder,
-    Pair,
-    // ------------------
-    DIH4DJSBuilder,
-    InteractionHandler
-}
+export * from './DIH4DJSBuilder';
+export * from './DIH4DJSLogger';
+export * from './InteractionHandler';
+export * from './SmartQueue';
+export * from './config/DIH4DJSConfig';
+export * from './interactions/Commands';
+export * from './interactions/ComponentHandler';
+export * from './interactions/commands/ExecutableCommand';
+export * from './interactions/commands/RestrictedCommand';
+export * from './interactions/commands/application/AppCommand';
+export * from './interactions/commands/application/BaseCommand';
+export * from './interactions/commands/application/ContextCommand';
+export * from './interactions/commands/application/RegistrationType';
+export * from './interactions/commands/application/SlashCommand';
+export * from './utils/CommandUtils';
+export * from './utils/ComponentIdBuilder';
+export * from './utils/Pair';

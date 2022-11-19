@@ -1,4 +1,5 @@
 export enum RegistrationType {
-    GLOBAL,
-    PRIVATE
+    Global,
+    Private,
+    Guild
 }

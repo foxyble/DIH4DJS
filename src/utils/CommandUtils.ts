@@ -3,9 +3,9 @@ import type { SlashCommand } from '../interactions/commands/application/SlashCom
 import type { ContextCommand } from '../interactions/commands/application/ContextCommand';
 
 import path from 'node:path';
-import Pair from './Pair';
+import { Pair } from './Pair';
 
-export default class CommandUtils {
+export class CommandUtils {
     /**
      * Used to create one command name out of the SlashCommand, SlashSubCommandGroup and SlashSubCommand.
      * @param args The arguments as {@link string}s you want to join together.

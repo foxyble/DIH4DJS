@@ -1,7 +1,7 @@
 /**
  * Base class for making component ids.
  */
-export default class ComponentIdBuilder {
+export class ComponentIdBuilder {
     private static seperator = ":";
 
     private constructor() {}

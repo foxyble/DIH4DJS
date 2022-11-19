@@ -2,10 +2,10 @@ import type { ApplicationCommand, Guild } from "discord.js";
 import type { ContextCommand } from "./interactions/commands/application/ContextCommand";
 import type { SlashCommand } from "./interactions/commands/application/SlashCommand";
 
-import Pair from "./utils/Pair";
-import DIH4DJSLogger from "./DIH4DJSLogger";
+import { Pair } from "./utils/Pair";
+import { DIH4DJSLogger } from "./DIH4DJSLogger";
 
-export default class SmartQueue {
+export class SmartQueue {
     private slashCommands: SlashCommand[];
     private contextCommands: ContextCommand<any>[];
 

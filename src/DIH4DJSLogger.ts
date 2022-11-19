@@ -8,7 +8,7 @@ enum LoggerLevel {
     WARN = "WARN"
 }
 
-export default class DIH4DJSLogger {
+export class DIH4DJSLogger {
     constructor() {}
 
     private static log = console.log;

@@ -1,19 +1,21 @@
 'use strict';
 
-const { Client, UserContextMenuCommandInteraction } = require("discord.js");
-const { ContextCommand, Commands } = require("../../dist");
+const { Client, MessageContextMenuCommandInteraction } = require("discord.js");
+const { ContextCommand, Commands } = require("../../source");
 
-class TestContextCommand extends ContextCommand.User {
+class TestContextCommand extends ContextCommand.Message {
     constructor() {
-        super(Commands.user("like"));
+        super(Commands.message("delete"));
     }
 
     /**
      * @param {Client} client 
-     * @param {UserContextMenuCommandInteraction} interaction 
+     * @param {MessageContextMenuCommandInteraction} interaction 
      */
-    execute(client, interaction) {
-        interaction.reply({ content: "test user context", ephemeral: true });
+    async execute(client, interaction) {
+        const message = interaction.targetMessage;
+        await message.delete();
+        interaction.reply({ content: 'Deleted message: ' + message.id });
     }
 }
 

@@ -1,9 +1,9 @@
 import type { Client } from "discord.js";
-import type ExecutableCommand from "../ExecutableCommand";
+import type { ExecutableCommand } from "../ExecutableCommand";
 
-import RestrictedCommand from "../RestrictedCommand";
+import { RestrictedCommand } from "../RestrictedCommand";
 
-export default abstract class AppCommand<E, T> extends RestrictedCommand implements ExecutableCommand<E> {
+export abstract class AppCommand<E, T> extends RestrictedCommand implements ExecutableCommand<E> {
     private data!: T;
 
     constructor(data: T) {

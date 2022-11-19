@@ -1,12 +1,12 @@
 import type { Client } from "discord.js";
 
-import DIH4DJS from ".";
-import DIH4DJSConfig from "./config/DIH4DJSConfig";
+import { DIH4DJS } from "./index";
+import { DIH4DJSConfig } from "./config/DIH4DJSConfig";
 
 /**
  * Main builder for creating the interaction handler
  */
-export default class DIH4DJSBuilder {
+export class DIH4DJSBuilder {
     private config: DIH4DJSConfig;
     private client: Client;
 
@@ -41,12 +41,8 @@ export default class DIH4DJSBuilder {
         return this;
     }
 
-    /**
-     * 
-     * @returns 
-     */
-    public disableUnknownCommandDeletion() {
-        this.config.setDeleteUnknownCommands(false);
+    public disableAutomaticCommandRegistration() {
+        this.config.setRegisterOnReady(false);
         return this;
     }
 

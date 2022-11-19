@@ -1,5 +1,5 @@
 import { Events } from "discord.js";
-import type DIH4DJS from "../index";
+import type { DIH4DJS } from "../index";
 import EventListener from "./abstract/EventListener"
 
 export default class onReady extends EventListener {

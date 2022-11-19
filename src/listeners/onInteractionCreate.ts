@@ -1,5 +1,5 @@
 import { BaseInteraction, Events } from "discord.js";
-import type DIH4DJS from "../index";
+import type { DIH4DJS } from "../index";
 
 import EventListener from "./abstract/EventListener"
 
@@ -28,11 +28,16 @@ export default class onInteractionCreate extends EventListener {
         /**
          * Handle Button Interaction
          */
-        // if(interaction.isButton()) {handler.handleButton(interaction);};
+        if(interaction.isButton()) {handler.handleButton(interaction);};
+
+        /**
+         * Handle SelectMenu Interaction
+         */
+        if(interaction.isSelectMenu()) {handler.handleSelectMenu(interaction);};
 
         /**
          * Handle ModalSubmit Interaction
          */
-        // if(interaction.isModalSubmit()) {handler.handleModal(interaction);};
+        if(interaction.isModalSubmit()) {handler.handleModal(interaction);};
     }
 }

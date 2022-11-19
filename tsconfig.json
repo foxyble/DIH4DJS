@@ -26,7 +26,7 @@
 		"inlineSources": true,
 		"newLine": "lf",
 		"noEmitHelpers": true,
-		"outDir": "dist",
+		"outDir": "source",
 		"preserveConstEnums": true,
 		"removeComments": false,
 		"sourceMap": true,

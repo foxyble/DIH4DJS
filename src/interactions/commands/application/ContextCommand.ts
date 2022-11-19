@@ -4,7 +4,7 @@ import type {
     UserContextMenuCommandInteraction 
 } from "discord.js";
 
-import BaseCommand from "./BaseCommand";
+import { BaseCommand } from "./BaseCommand";
 
 export abstract class ContextCommand<E> extends BaseCommand<E, ContextMenuCommandBuilder> {}
 

@@ -1,4 +1,4 @@
-export default class Pair<F, S> {
+export class Pair<F, S> {
     private first: F;
     private second: S;
 

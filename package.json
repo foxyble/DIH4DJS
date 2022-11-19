@@ -1,12 +1,15 @@
 {
   "name": "dih4djs",
-  "version": "0.2.21-beta",
+  "version": "1.0.0",
   "description": "interaction handler for the discord.js library",
   "scripts": {
     "test": "node ./__tests__/index.test.js",
-    "build": "rimraf ./dist && tsc"
+    "build": "rimraf ./source && tsc"
   },
-  "main": "./dist/index.js",
+  "main": "./source/index.js",
+  "exports": {
+    "require": "./source/index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/OoP1nk/DIH4DJS.git"
