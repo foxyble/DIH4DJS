@@ -14,11 +14,7 @@
  * GNU General Public License for more details.
  */
 import { Events } from "discord.js";
-<<<<<<< HEAD
 import type { DIH4DJS } from "../index";
-=======
-import type { DIH4DJS } from "../DIH4DJS";
->>>>>>> origin/main
 import EventListener from "./abstract/EventListener"
 
 class onReady extends EventListener {
