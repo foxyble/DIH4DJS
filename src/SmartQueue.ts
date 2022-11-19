@@ -51,11 +51,6 @@ export class SmartQueue {
         existing.forEach((cmd, idx) => {
             if(this.contextCommands.map((data) => cmd.name === data.getCommandData().name)
                     || this.slashCommands.map((data) => cmd.name === data.getCommandData().name)) {
-                if(global) {
-                    DIH4DJSLogger.info(prefix + "Found %s duplicate command, it will be updated: %ss"
-                    .replace("%s", cmd.type.toString())
-                    .replace("%ss", cmd.name));
-                }
                 existing.splice(idx, 1);
             }
             return;
