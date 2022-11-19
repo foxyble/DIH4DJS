@@ -24,5 +24,5 @@ export interface ExecutableCommand<E> {
      * The method that gets called once the command gets executed.
      * @param interaction 
      */
-    onExecute(client: Client, interaction: E): void;
+    execute(client: Client, interaction: E): void;
 }

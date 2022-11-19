@@ -1,6 +1,7 @@
-import 'dotenv/config';
+require('dotenv').config();
 
-import { Client, IntentsBitField } from 'discord.js';
+const { Client, IntentsBitField } = require("discord.js");
+const { DIH4DJSBuilder } = require("../source");
 
 const IntentFlags = IntentsBitField.Flags;
 const client = new Client({
@@ -15,10 +16,8 @@ const client = new Client({
 
 const dih4djs = new DIH4DJSBuilder()
     .setClient(client)
-    .setTestingGuild(process.env.TEST_GUILD)
     .setCommandPackages("./systems/")
+    .disabledCommandLogging()
     .build();
 
 client.login(process.env.TOKEN);
-
-setTimeout(() => client.destroy(), 10000);

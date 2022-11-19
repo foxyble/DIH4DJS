@@ -18,8 +18,9 @@ import type { Client } from "discord.js";
 export class DIH4DJSConfig {
     private client!: Client;
     private commandsPackages: string[] = Array.of();
-    private registerOnReady: boolean = true;
     private testingGuild: string = "";
+    private registerOnReady: boolean = true;
+    private disableLogging: boolean = false;
 
     /**
      * Creates a default instance
@@ -72,6 +73,22 @@ export class DIH4DJSConfig {
      */
     public setRegisterOnReady(registerOnReady: boolean) {
         this.registerOnReady = registerOnReady;
+    }
+
+    /**
+     * True is command logging is enabled, else false.
+     * @param disableLogging True is command logging is enabled, else false.
+     */
+    public setDisableLogging(disableLogging: boolean) {
+        this.disableLogging = disableLogging;
+    }
+
+    /**
+     * True is command logging is enabled, else false.
+     * @returns Whether logging is disabled or not.
+     */
+    public isLoggingDisabled(): boolean {
+        return this.disableLogging;
     }
 
     /**

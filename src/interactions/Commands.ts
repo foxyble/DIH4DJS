@@ -17,7 +17,9 @@ import {
     SlashCommandBuilder, 
     ContextMenuCommandBuilder, 
     ApplicationCommandType, 
-    ContextMenuCommandType 
+    ContextMenuCommandType, 
+    SlashCommandSubcommandBuilder,
+    SlashCommandSubcommandGroupBuilder
 } from 'discord.js';
 
 export class Commands {
@@ -32,21 +34,23 @@ export class Commands {
     }
 
     /**
-     * Create a message context command builder.
+     * Create a slashcommand subcommand builder.
      * @param name The command name
-     * @returns {@link ContextMenuCommandBuilder}
+     * @param description The command description
+     * @returns {@link SlashCommandSubcommandBuilder}
      */
-    public static message(name: string): ContextMenuCommandBuilder {
-        return new ContextMenuCommandBuilder().setType(ApplicationCommandType.Message).setName(name);
+    public static slashSub(name: string, description: string): SlashCommandSubcommandBuilder {
+        return new SlashCommandSubcommandBuilder().setName(name).setDescription(description);
     }
 
     /**
-     * Create a user context command builder.
-     * @param name The command name.
-     * @returns {@link ContextMenuCommandBuilder}
+     * Create a slashcommand subcommand group builder.
+     * @param name The command name
+     * @param description The command description
+     * @returns {@link SlashCommandSubcommandGroupBuilder}
      */
-    public static user(name: string): ContextMenuCommandBuilder {
-        return new ContextMenuCommandBuilder().setType(ApplicationCommandType.User).setName(name);
+    public static slashGroup(name: string, description: string): SlashCommandSubcommandGroupBuilder {
+        return new SlashCommandSubcommandGroupBuilder().setName(name).setDescription(description);
     }
 
     /**
@@ -55,7 +59,25 @@ export class Commands {
      * @param name The command name
      * @returns {@link ContextMenuCommandBuilder}
      */
-    public static context(type: ContextMenuCommandType, name: string) {
+    public static context(type: ContextMenuCommandType, name: string): ContextMenuCommandBuilder {
         return new ContextMenuCommandBuilder().setType(type).setName(name);
+    }
+
+    /**
+     * Create a message context command builder.
+     * @param name The command name
+     * @returns {@link ContextMenuCommandBuilder}
+     */
+    public static contextMessage(name: string): ContextMenuCommandBuilder {
+        return new ContextMenuCommandBuilder().setType(ApplicationCommandType.Message).setName(name);
+    }
+
+    /**
+     * Create a user context command builder.
+     * @param name The command name.
+     * @returns {@link ContextMenuCommandBuilder}
+     */
+    public static contextUser(name: string): ContextMenuCommandBuilder {
+        return new ContextMenuCommandBuilder().setType(ApplicationCommandType.User).setName(name);
     }
 }

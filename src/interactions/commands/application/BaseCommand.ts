@@ -15,7 +15,7 @@
  */
 import type { RegistrationType } from "./RegistrationType";
 
-import { DIH4DJS } from "../../../DIH4DJS";
+import { DIH4DJS } from "../../../index";
 import { AppCommand } from "./AppCommand";
 
 export abstract class BaseCommand<E, T> extends AppCommand<E, T> {
