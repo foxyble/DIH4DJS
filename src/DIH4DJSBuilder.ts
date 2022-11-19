@@ -1,16 +1,31 @@
+/**
+ * DIH4DJS is a power package to handle interactions using 
+ * the discord.js library.
+ * Copyright (C) 2022  OoP1nk
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
 import type { Client } from "discord.js";
 
-import DIH4DJS from ".";
-import DIH4DJSConfig from "./config/DIH4DJSConfig";
+import { DIH4DJS } from "./DIH4DJS";
+import { DIH4DJSConfig } from "./config/DIH4DJSConfig";
 
 /**
  * Main builder for creating the interaction handler
  */
-export default class DIH4DJSBuilder {
+export class DIH4DJSBuilder {
     private config: DIH4DJSConfig;
     private client: Client;
 
-    constructor(client: Client) {
+    private constructor(client: Client) {
         this.config = new DIH4DJSConfig();
         this.client = client;
     }
@@ -18,6 +33,7 @@ export default class DIH4DJSBuilder {
     /**
      * Set the client.
      * @param client The discord.js client object
+     * @returns The {@link DIH4DJS} for chaining convenience.
      */
     public setClient(client: Client): DIH4DJSBuilder {
         return new DIH4DJSBuilder(client);
@@ -26,6 +42,7 @@ export default class DIH4DJSBuilder {
     /**
      * Set to base command and interaction handler directory.
      * @param packages The directory where commands and interaction handlers are
+     * @returns The {@link DIH4DJS} for chaining convenience.
      */
     public setCommandPackages(...packages: string[]): DIH4DJSBuilder {
         this.config.setCommandPackages(packages);
@@ -35,6 +52,7 @@ export default class DIH4DJSBuilder {
     /**
      * Sets the testing guild's id.
      * @param guildId The testing guild id.
+     * @returns The {@link DIH4DJS} for chaining convenience.
      */
     public setTestingGuild(guildId: string) {
         this.config.setTestingGuild(guildId);
@@ -42,11 +60,11 @@ export default class DIH4DJSBuilder {
     }
 
     /**
-     * 
-     * @returns 
+     * Whether DIH4DJS should automatically register all interactions on each ready event.
+     * @returns The {@link DIH4DJS} for chaining convenience.
      */
-    public disableUnknownCommandDeletion() {
-        this.config.setDeleteUnknownCommands(false);
+    public disableAutomaticCommandRegistration() {
+        this.config.setRegisterOnReady(false);
         return this;
     }
 

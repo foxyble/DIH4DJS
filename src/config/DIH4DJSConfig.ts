@@ -1,12 +1,25 @@
+/**
+ * DIH4DJS is a power package to handle interactions using 
+ * the discord.js library.
+ * Copyright (C) 2022  OoP1nk
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
 import type { Client } from "discord.js";
 
-export default class DIH4DJSConfig {
+export class DIH4DJSConfig {
     private client!: Client;
     private commandsPackages: string[] = Array.of();
     private registerOnReady: boolean = true;
-    private deleteUnknownCommands: boolean = true;
     private testingGuild: string = "";
-
 
     /**
      * Creates a default instance
@@ -59,22 +72,6 @@ export default class DIH4DJSConfig {
      */
     public setRegisterOnReady(registerOnReady: boolean) {
         this.registerOnReady = registerOnReady;
-    }
-
-    /**
-     * True is unknown commands should be deleted and false if not.
-     * @returns True if they are getting deleted, otherwise false.
-     */
-    public isDeleteUnknownCommands(): boolean {
-        return this.deleteUnknownCommands;
-    }
-
-    /**
-     * True is unknown commands should be deleted and false if not.
-     * @param deleteUnknownCommands True if they are getting deleted, otherwise false.
-     */
-    public setDeleteUnknownCommands(deleteUnknownCommands: boolean) {
-        this.deleteUnknownCommands = deleteUnknownCommands;
     }
 
     /**

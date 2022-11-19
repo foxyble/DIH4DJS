@@ -1,15 +1,36 @@
 # About
 DIH4DJS is a powerful interaction handler module for the [discord.js](https://https://github.com/discordjs/discord.js) package.
 
-This library is based off of the java package [DIH4JDA](https://github.com/DynxstyGIT/DIH4JDA) with some minor changes and adaptations to work with discord.js.
+This library is based off of the java package [DIH4JDA](https://github.com/DynxstyGIT/DIH4JDA) with adaptations with the obvious change (*pst* its in javascript).
 
 # Installation
-**Node.js 16.9.0 or newer is required as well as discord.js v14.6.0**
+**DIH4DJS is built using [discord.js v14.6.0]() therefore requiring Node.js version 16.9.0 or newer**
 ```sh-session
 npm install dih4djs
 yarn add dih4djs
+pnpm add dih4djs
+```
+# Setup/Configuration
+For a more indepth description on how to register commands feel free to look at the [Wiki](https://github.com/OoP1nk/DIH4DJS/wiki).
+
+## Setting up the handler
+```javasript
+const { Client } = require('discord.js');
+const { DIH4DJSBuilder } = require('dih4djs');
+
+const client = new Client({
+    intents: [YOUR_INTENTS]
+});
+
+const dih4djs = new DIH4DJSBuilder()
+    .setClient(client)
+    .setCommandPackages("CommandDir1", "CommandDir2")
+    .setTestingGuild("TestGuildId")
+    .build()
+
+client.login("YOUR_TOKEN_HERE");
 ```
 
 # Contributing
 
-# Setup/Configuration
+When contributing please follow the steps provided: [CONTRIBUTING](https://github.com/OoP1nk/DIH4DJS/.github/CONTIBUTING.md)

@@ -1,11 +1,26 @@
+/**
+ * DIH4DJS is a power package to handle interactions using 
+ * the discord.js library.
+ * Copyright (C) 2022  OoP1nk
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
 import type { RegistrationType } from '../interactions/commands/application/RegistrationType';
 import type { SlashCommand } from '../interactions/commands/application/SlashCommand';
 import type { ContextCommand } from '../interactions/commands/application/ContextCommand';
 
 import path from 'node:path';
-import Pair from './Pair';
+import { Pair } from './Pair';
 
-export default class CommandUtils {
+export class CommandUtils {
     /**
      * Used to create one command name out of the SlashCommand, SlashSubCommandGroup and SlashSubCommand.
      * @param args The arguments as {@link string}s you want to join together.

@@ -1,17 +1,32 @@
+/**
+ * DIH4DJS is a power package to handle interactions using 
+ * the discord.js library.
+ * Copyright (C) 2022  OoP1nk
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
 import type { RestrictedCommand } from "./interactions/commands/RestrictedCommand";
-import type DIH4DJS from "./index";
+import type { DIH4DJS } from "./DIH4DJS";
 
 import path from "node:path";
 import fs from "node:fs/promises";
 import { RegistrationType } from './interactions/commands/application/RegistrationType';
 import { ContextCommand } from "./interactions/commands/application/ContextCommand";
 import { SlashCommand } from "./interactions/commands/application/SlashCommand";
-import ComponentHandler from "./interactions/ComponentHandler";
-import CommandUtils from "./utils/CommandUtils";
-import DIH4DJSLogger from "./DIH4DJSLogger";
-import SmartQueue from "./SmartQueue";
-import Pair from "./utils/Pair";
-import ComponentIdBuilder from "./utils/ComponentIdBuilder";
+import { ComponentHandler } from "./interactions/ComponentHandler";
+import { CommandUtils } from "./utils/CommandUtils";
+import { DIH4DJSLogger } from "./DIH4DJSLogger";
+import { SmartQueue } from "./SmartQueue";
+import { Pair } from "./utils/Pair";
+import { ComponentIdBuilder } from "./utils/ComponentIdBuilder";
 import { 
     ApplicationCommand,
     ApplicationCommandType,
@@ -31,7 +46,7 @@ import {
     UserContextMenuCommandInteraction 
 } from "discord.js";
 
-export default class InteractionHandler {
+export class InteractionHandler {
     private static RETRIVED_COMMANDS: Collection<string, ApplicationCommand> = new Collection();
 
     public slashCommands: SlashCommand[];

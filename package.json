@@ -1,20 +1,30 @@
 {
   "name": "dih4djs",
-  "version": "0.2.21-beta",
+  "version": "1.0.2-beta",
   "description": "interaction handler for the discord.js library",
   "scripts": {
-    "test": "node ./__tests__/index.test.js",
-    "build": "rimraf ./dist && tsc"
+    "test": "npm run test:ts && npm run test:cjs",
+    "test:ts": "node ./__tests__/ts/index.test.ts",
+    "test:cjs": "node ./__tests__/cjs/index.test.js",
+    "build": "rimraf source && tsc"
   },
-  "main": "./dist/index.js",
+  "main": "./source/index.js",
+  "exports": {
+    "require": "./source/index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/OoP1nk/DIH4DJS.git"
   },
   "keywords": [
     "discord.js",
+    "discordjs",
+    "discord",
     "interaction-handler",
-    "discord"
+    "command-handler",
+    "slashcommands",
+    "contextcommands",
+    "handler"
   ],
   "author": "OoP1nk",
   "license": "Apache-2.0",
@@ -28,8 +38,7 @@
   },
   "devDependencies": {
     "dotenv": "^16.0.3",
-    "esbuild-plugin-version-injector": "^1.0.0",
     "rimraf": "^3.0.2",
-    "typescript": "^4.9.3"
+    "typescript": "^4.8.4"
   }
 }
