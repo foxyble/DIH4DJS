@@ -214,7 +214,7 @@ export class InteractionManager {
                 .forEach((s) => (commandData as SlashCommandBuilder).addSubcommand(s));
         }
         this.slashCommandIndex.set(CommandUtils.buildCommandPath(commandData.name), command);
-        DIH4DJSLogger.info(`Registered command: /${command.getCommandData().name} (${command.registrationType})`);
+        DIH4DJSLogger.info(`Registered command: /${command.getCommandData().name} (${command.registrationType})`, DIH4DJSLogger.Type.SlashCommandRegistered);
         return commandData;
     }
 
@@ -254,7 +254,7 @@ export class InteractionManager {
                     commandPath = CommandUtils.buildCommandPath(command.getCommandData().name, subGroupName, subcommand.getCommandData().name);
                 }
                 this.subcommandIndex.set(commandPath, subcommand);
-                DIH4DJSLogger.info(`Registered command: /${command.getCommandData().name} (${command.registrationType})`);
+                DIH4DJSLogger.info(`Registered command: /${commandPath} (${command.registrationType})`, DIH4DJSLogger.Type.SlashCommandRegistered);
                 subDataList.push(subcommand.getCommandData());
             }
         }
@@ -294,7 +294,7 @@ export class InteractionManager {
             DIH4DJSLogger.error("Invalid command type %t for Context Command! It will be ignored.".replace("%t", data.type));
             return null;
         }
-        DIH4DJSLogger.info(`Registered context command: ${data.name} (${command.registrationType})`);
+        DIH4DJSLogger.info(`Registered context command: ${data.name} (${command.registrationType})`, DIH4DJSLogger.Type.ContextCommandRegistered);
         return data;
     }
 
