@@ -13,48 +13,39 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+import type { DIH4DJS } from "../DIH4DJS";
+import EventListener from "../structures/EventListener"
 import { BaseInteraction, Events } from "discord.js";
-import type { DIH4DJS } from "../index";
 
-import EventListener from "./abstract/EventListener"
-
+/**
+ * Interaction event listener.
+ * @since v1.0
+ */
 class onInteractionCreate extends EventListener {
     constructor() {
         super(Events.InteractionCreate);
     }
 
     onExecute(dih4djs: DIH4DJS, interaction: BaseInteraction): void {
-        const handler = dih4djs.getInteractionHandler();
-        
-        /**
-         * Handle SlashCommand Interaction
-         */
-        if(interaction.isChatInputCommand()) {handler.handleSlashCommand(interaction);};
+        const interactionHandler = dih4djs.interactionManager;
 
         /**
-         * Handle MessageContextCommand Interaction
+         * Command Interaction Handlers
+         * @since v1.0
          */
-        if(interaction.isMessageContextMenuCommand()) {handler.handleMessageContextCommand(interaction);};
+        if(interaction.isChatInputCommand()) {interactionHandler.handleSlashCommand(interaction);};
+        if(interaction.isMessageContextMenuCommand()) {interactionHandler.handleMessageContextCommand(interaction);};
+        if(interaction.isUserContextMenuCommand()) {interactionHandler.handleUserContextCommand(interaction);};
+
+        const componentHandler = dih4djs.componentManager;
 
         /**
-         * Handle UserContextCoommand Interaction
+         * Component Interaction Handlers
+         * @since v1.0
          */
-        if(interaction.isUserContextMenuCommand()) {handler.handleUserContextCommand(interaction);};
-
-        /**
-         * Handle Button Interaction
-         */
-        if(interaction.isButton()) {handler.handleButton(interaction);};
-
-        /**
-         * Handle SelectMenu Interaction
-         */
-        if(interaction.isSelectMenu()) {handler.handleSelectMenu(interaction);};
-
-        /**
-         * Handle ModalSubmit Interaction
-         */
-        if(interaction.isModalSubmit()) {handler.handleModal(interaction);};
+        if(interaction.isButton()) {componentHandler.handleButton(interaction);};
+        if(interaction.isSelectMenu()) {componentHandler.handleSelectMenu(interaction);};
+        if(interaction.isModalSubmit()) {componentHandler.handleModal(interaction);};
     }
 }
 

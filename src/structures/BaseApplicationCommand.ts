@@ -13,17 +13,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+import { DIH4DJS } from "../DIH4DJS";
 import type { Client } from "discord.js";
-import type { ExecutableCommand } from "../ExecutableCommand";
+import type { ExecutableCommand } from "./ExecutableCommand";
+import { RestrictedCommand, CommandOptions } from "./RestrictedCommand";
 
-import { RestrictedCommand } from "../RestrictedCommand";
-
-export abstract class AppCommand<E, T> extends RestrictedCommand implements ExecutableCommand<E> {
+/**
+ * @since v1.0
+ */
+export abstract class BaseApplicationCommand<E, T> extends RestrictedCommand implements ExecutableCommand<E> {
     private data!: T;
 
-    constructor(data: T) {
-        super();
-        this.data = data;
+    constructor(data: any, options?: CommandOptions) {
+        super({
+            ...BaseApplicationCommand.createDefault(),
+            ...options
+        });
+        this.data = (data as T);
     }
 
     /**
@@ -40,6 +46,19 @@ export abstract class AppCommand<E, T> extends RestrictedCommand implements Exec
      */
     public getCommandData(): T {
         return this.data;
+    }
+
+    /**
+     * Creates the default options for an {@link AppCommand}.
+     * @returns The default command options
+     * @since v1.1
+     */
+    static createDefault(): CommandOptions {
+        return {
+            registrationType: DIH4DJS.defaultRegistrationType,
+            cooldown: 0,
+            components: {}
+        }
     }
 
     execute(_client: Client, _interaction: E): void {}

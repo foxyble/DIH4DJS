@@ -27,46 +27,71 @@ export class DIH4DJSLogger {
     constructor() {}
 
     private static log = console.log;
+    public static blockedLogTypes: DIH4DJSLogger.Type[] = Array.of();
     
-    private static async log0(msg: any, level: LoggerLevel) {
-        var format: string = `(%date%) [%level%]: ${msg}`
-            .replace("%date%", chalk`{yellow ${new Date(Date.now()).toUTCString()}}`);
+    private static async log0(msg: any, type: DIH4DJSLogger.Type, level: LoggerLevel) {
+        if(this.blockedLogTypes.includes(type)) return;
+        var format: string = `(%date) [%lvl]: ${msg}`.replace("%date", chalk`{yellow ${new Date(Date.now()).toUTCString()}}`);
         switch(level) {
             case LoggerLevel.DEBUG:
-                this.log(format.replace("%level%", chalk.blueBright(level)));
+                this.log(format.replace("%lvl", chalk.blueBright(level)));
                 break;
             case LoggerLevel.ERROR:
-                this.log(format.replace("%level%", chalk.redBright(level)));
+                this.log(format.replace("%lvl", chalk.redBright(level)));
                 break;
             case LoggerLevel.INFO:
-                this.log(format.replace("%level%", chalk.cyan(level)));
+                this.log(format.replace("%lvl", chalk.cyan(level)));
                 break;
             case LoggerLevel.TRACE:
-                this.log(format.replace("%level%", chalk.blue(level)));
+                this.log(format.replace("%lvl", chalk.blue(level)));
                 break;
             case LoggerLevel.WARN:
-                this.log(format.replace("%level%", chalk.red(level)));
+                this.log(format.replace("%lvl", chalk.red(level)));
                 break;
         }
     }
 
-    public static info(msg: any) {
-        this.log0(msg, LoggerLevel.INFO);
+    static info(msg: string, type?: DIH4DJSLogger.Type) {
+        this.log0(msg, (type ? type : DIH4DJSLogger.Type.Info), LoggerLevel.INFO);
     }
 
-    public static warn(msg: any) {
-        this.log0(msg, LoggerLevel.WARN);
+    static warn(msg: string, type?: DIH4DJSLogger.Type) {
+        this.log0(msg, (type ? type : DIH4DJSLogger.Type.Warn), LoggerLevel.WARN);
     }
 
-    public static error(msg: any) {
-        this.log0(msg, LoggerLevel.ERROR);
+    static error(msg: string, type?: DIH4DJSLogger.Type) {
+        this.log0(msg, (type ? type : DIH4DJSLogger.Type.Error), LoggerLevel.ERROR);
     }
 
-    public static debug(msg: any) {
-        this.log0(msg, LoggerLevel.DEBUG);
+    static debug(msg: string, type?: DIH4DJSLogger.Type) {
+        this.log0(msg, (type ? type : DIH4DJSLogger.Type.Debug), LoggerLevel.DEBUG);
     }
 
-    public static trace(msg: any) {
-        this.log0(msg, LoggerLevel.TRACE);
+    static trace(msg: string, type?: DIH4DJSLogger.Type): any {
+        this.log0(msg, (type ? type : DIH4DJSLogger.Type.Trace), LoggerLevel.TRACE);
+    }
+}
+
+export namespace DIH4DJSLogger {
+    export enum Type {
+        Info,
+        Error,
+        Debug,
+        Warn,
+        Trace,
+        CommandQueued,
+        SlashCommandRegistered,
+        SlashCommandSkipped,
+        SlashCommandNotFound,
+        ContextCommandRegistered,
+        ContextCommandSkipped,
+        ContextCommandNotFound,
+        SmartQueue,
+        SmartQueueIgnored,
+        SmartQueueDeleteUnknown,
+        SmartQueueIgnoreUnknown,
+        ButtonNotFound,
+        SelectMenuNotFound,
+        ModalNotFound
     }
 }

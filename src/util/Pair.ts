@@ -14,33 +14,39 @@
  * GNU General Public License for more details.
  */
 
+/**
+ * A pair of two elements.
+ * @param <F> The first value.
+ * @param <S> The second value.
+ * @since v1.0
+ */
 export class Pair<F, S> {
-    private first: F;
-    private second: S;
+    private _first: F;
+    private _second: S;
 
     /**
      * Creates a new {@link Pair} of to {@link Object}s
      * @param first The first {@link Object}.
      * @param second The second {@link Object}.
      */
-    public constructor(first: F, second: S) {
-        this.first = first;
-        this.second = second;
+    constructor(first: F, second: S) {
+        this._first = first;
+        this._second = second;
     }
 
     /**
      * Gets you the {@link Object} that was defined first.
      * @returns The first {@link Object}
      */
-    public getFirst(): F {
-        return this.first;
+    get first(): F {
+        return this._first;
     }
 
     /**
      * Gets you the {@link Object} that was defined second.
      * @returns The second {@link Object}
      */
-    public getSecond(): S {
-        return this.second;
+    get second(): S {
+        return this._second;
     }
 }

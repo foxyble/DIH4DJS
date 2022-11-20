@@ -13,25 +13,19 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-import type { DIH4DJS } from "../DIH4DJS";
-import EventListener from "../structures/EventListener";
-import { Events } from "discord.js";
+import type { 
+    ContextMenuCommandBuilder, 
+    MessageContextMenuCommandInteraction, 
+    UserContextMenuCommandInteraction 
+} from "discord.js";
+import { BaseApplicationCommand } from "./BaseApplicationCommand";
 
 /**
- * ClientReady event listener.
  * @since v1.0
  */
-class onReady extends EventListener {
-    constructor() {
-        super(Events.ClientReady);
-    }
+export abstract class ContextCommand<E> extends BaseApplicationCommand<E, ContextMenuCommandBuilder> {}
 
-    onExecute(dih4djs: DIH4DJS): void {
-        if(dih4djs.packages === null) return;
-        if(dih4djs.isRegisterOnReady && dih4djs.interactionManager !== null) {
-            dih4djs.registerInteractions();
-        }
-    }
+export namespace ContextCommand {
+    export abstract class User extends ContextCommand<UserContextMenuCommandInteraction> {}
+    export abstract class Message extends ContextCommand<MessageContextMenuCommandInteraction> {}
 }
-
-export default onReady;

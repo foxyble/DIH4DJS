@@ -13,18 +13,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-abstract class EventListener {
-    private eventName: string;
+import type { Client } from "discord.js";
 
-    constructor(name: string) {
-        this.eventName = name;
-    }
-
-    public getEventName() {
-        return this.eventName;
-    }
-
-    abstract onExecute(..._args: any): void;
+/**
+ * Represents a command that can be executed.
+ * @param <E> the interaction to pass to the command.
+ * @since v1.0
+ */
+export interface ExecutableCommand<E> {
+    /**
+     * The method that gets called once the command gets executed.
+     * @param interaction 
+     */
+    execute(client: Client, interaction: E): void;
 }
-
-export default EventListener;

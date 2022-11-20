@@ -13,78 +13,64 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-import type { RestrictedCommand } from "./interactions/commands/RestrictedCommand";
-import type { DIH4DJS } from "./index";
+import type { RestrictedCommand } from "../structures/RestrictedCommand";
+import type { DIH4DJS } from "../DIH4DJS";
 
 import path from "node:path";
 import fs from "node:fs/promises";
-import { RegistrationType } from './interactions/commands/application/RegistrationType';
-import { ContextCommand } from "./interactions/commands/application/ContextCommand";
-import { SlashCommand } from "./interactions/commands/application/SlashCommand";
-import { ComponentHandler } from "./interactions/ComponentHandler";
-import { CommandUtils } from "./utils/CommandUtils";
-import { DIH4DJSLogger } from "./DIH4DJSLogger";
-import { SmartQueue } from "./SmartQueue";
-import { Pair } from "./utils/Pair";
-import { ComponentIdBuilder } from "./utils/ComponentIdBuilder";
-import { 
+import { RegistrationType } from '../util/RegistrationType';
+import { ContextCommand } from "../structures/ContextCommand";
+import { SlashCommand } from "../structures/SlashCommand";
+import { ComponentHandler } from "../structures/ComponentHandler";
+import { CommandUtils } from "../util/CommandUtils";
+import { DIH4DJSLogger } from "../DIH4DJSLogger";
+import { SmartQueue } from "../structures/SmartQueue";
+import { Pair } from "../util/Pair";
+import { getRootPath } from "../util/Util";
+import {
     ApplicationCommand,
     ApplicationCommandType,
     BaseInteraction, 
-    ButtonInteraction, 
     ChatInputCommandInteraction, 
     Collection, 
     Guild, 
     GuildMember, 
     MessageContextMenuCommandInteraction, 
-    ModalSubmitInteraction, 
     REST, 
     Routes, 
-    SelectMenuInteraction, 
     SlashCommandBuilder, 
     SlashCommandSubcommandBuilder, 
     SlashCommandSubcommandGroupBuilder, 
     UserContextMenuCommandInteraction 
 } from "discord.js";
 
-export class InteractionHandler {
+/**
+ * Manager to handle interactions.
+ * @since v1.0
+ */
+export class InteractionManager {
     private static RETRIVED_COMMANDS: Collection<string, ApplicationCommand> = new Collection();
 
     public slashCommands: SlashCommand[];
     public contextCommands: ContextCommand<any>[];
 
-    /**
-     * An index of all {@link SlashCommand.Command}s
-     */
+    /** An index of all {@link SlashCommand.Command}s */
     private slashCommandIndex: Collection<string, SlashCommand>;
 
-    /**
-     * An index of all {@link SlashCommand.Subcommand}s
-     */
+    /** An index of all {@link SlashCommand.Subcommand}s */
     private subcommandIndex: Collection<string, SlashCommand.Subcommand>;
 
-    /**
-     * An index of all {@link ContextCommand.Message}s
-     */
+    /** An index of all {@link ContextCommand.Message}s */
     private messageContextIndex: Collection<string, ContextCommand.Message>;
 
-    /**
-     * An index of all {@link ContextCommand.User}s
-     */
+    /** An index of all {@link ContextCommand.User}s */
     private userContextIndex: Collection<string, ContextCommand.User>;
-
-    /**
-     * An index of all {@link ComponentHandler}s.
-     */
-    private buttonHandlers: Collection<string, ComponentHandler>;
-    private selectMenuHandlers: Collection<string, ComponentHandler>;
-    private modalHandlers: Collection<string, ComponentHandler>;
 
     private dih4djs: DIH4DJS;
 
     /**
      * Constructs a new {@link InteractionManager}
-     * @param client The {@link Lorra} instance
+     * @param dih4djs The {@link DIH4DJS} instance
      */
     constructor(dih4djs: DIH4DJS) {
         this.dih4djs = dih4djs;
@@ -92,16 +78,12 @@ export class InteractionHandler {
         this.slashCommands = Array.of();
         this.contextCommands = Array.of();
 
-        this.findCommandsAndComponents(dih4djs.getPackages());
+        this.findCommandsAndComponents(dih4djs.packages);
 
         this.slashCommandIndex = new Collection();
         this.subcommandIndex = new Collection();
         this.messageContextIndex = new Collection();
         this.userContextIndex = new Collection();
-
-        this.buttonHandlers = new Collection();
-        this.selectMenuHandlers = new Collection();
-        this.modalHandlers = new Collection();
     }
 
     /**
@@ -111,36 +93,36 @@ export class InteractionHandler {
      */
     public registerInteractions() {
         const data = new Pair(this.getSlashCommands(), this.getContextCommands());
-        if(!this.dih4djs.getClient().token && !this.dih4djs.getClient().application) return;
-        const token = this.dih4djs.getClient().token!;
-        const appId = this.dih4djs.getClient().application!.id!;
+        if(!this.dih4djs.client.token && !this.dih4djs.client.application) return;
+        const token = this.dih4djs.client.token!;
+        const appId = this.dih4djs.client.application!.id!;
         const rest = new REST({ version: '10' }).setToken(token);
-        this.dih4djs.getClient().guilds.cache.forEach(async (guild) => {
+        this.dih4djs.client.guilds.cache.forEach(async (guild) => {
             const existing = guild.commands.cache;
             var guildData: Pair<SlashCommand[], ContextCommand<any>[]>;
-            if(guild.id === this.dih4djs.testingGuild())
+            if(guild.id === this.dih4djs.testingServer)
                 guildData = CommandUtils.filterByType(data, RegistrationType.Private);
             else guildData = CommandUtils.filterByType(data, RegistrationType.Guild);
             existing.forEach((e) => this.cacheCommand(e));
-            guildData = new SmartQueue(guildData.getFirst(), guildData.getSecond()).checkGuild(Array.from(existing.values()), guild);
-            if(guildData.getFirst() || guildData.getSecond()) {
-                this.upsertGuildCommands(guild, guildData.getFirst(), guildData.getSecond());
+            guildData = new SmartQueue(guildData.first, guildData.second).checkGuild(Array.from(existing.values()), guild);
+            if(guildData.first || guildData.second) {
+                this.upsertGuildCommands(guild, guildData.first, guildData.second);
             }
         });
         rest.get(Routes.applicationCommands(appId)).then((existing: any) => {
             var globalData = CommandUtils.filterByType(data, RegistrationType.Global)
             existing.forEach((e: any) => this.cacheCommand((e as ApplicationCommand)));
-            globalData = new SmartQueue(globalData.getFirst(), globalData.getSecond()).checkGlobal(existing);
-            if(globalData.getFirst() || globalData.getSecond()) {
-                this.upsertGlobalCommands(globalData.getFirst(), globalData.getSecond())
-                DIH4DJSLogger.info("Queued %s global command(s): %ss".replace("%s", `${globalData.getFirst().length + globalData.getSecond().length}`).replace("%ss", CommandUtils.getNames(globalData.getSecond(), globalData.getFirst())))
+            globalData = new SmartQueue(globalData.first, globalData.second).checkGlobal(existing);
+            if(globalData.first || globalData.second) {
+                this.upsertGlobalCommands(globalData.first, globalData.second)
+                DIH4DJSLogger.info("Queued %s global command(s): %ss".replace("%s", `${globalData.first.length + globalData.second.length}`).replace("%ss", CommandUtils.getNames(globalData.second, globalData.first)))
             }
         });
     }
 
     private async upsertGuildCommands(guild: Guild, slashCommands: SlashCommand[], contextCommands: ContextCommand<any>[]) {
-        const token = this.dih4djs.getClient().token!;
-        const appId = this.dih4djs.getClient().application!.id!;
+        const token = this.dih4djs.client.token!;
+        const appId = this.dih4djs.client.application!.id!;
         const rest = new REST({ version: '10' }).setToken(token);
         var commands: any[] = Array.of();
         slashCommands.map(c => commands.push(c.getCommandData().toJSON()));
@@ -150,8 +132,8 @@ export class InteractionHandler {
     }
 
     private async upsertGlobalCommands(slashCommands: SlashCommand[], contextCommands: ContextCommand<any>[]) {
-        const token = this.dih4djs.getClient().token!;
-        const appId = this.dih4djs.getClient().application!.id!;
+        const token = this.dih4djs.client.token!;
+        const appId = this.dih4djs.client.application!.id!;
         const rest = new REST({ version: '10' }).setToken(token);
         var commands: any[] = Array.of();
         slashCommands.map(c => commands.push(c.getCommandData().toJSON()));
@@ -161,7 +143,7 @@ export class InteractionHandler {
     }
 
     private cacheCommand(command: ApplicationCommand) {
-        InteractionHandler.RETRIVED_COMMANDS.set(command.name, command);
+        InteractionManager.RETRIVED_COMMANDS.set(command.name, command);
     }
 
     public static getRetrievedCommands() {
@@ -170,7 +152,7 @@ export class InteractionHandler {
 
     /**
      * Find and Register all {@link SlashCommand}s
-     * @param dir Location of {@link SlashCommand}s
+     * @param packages Location of {@link SlashCommand}s
      */
     private findCommandsAndComponents(packages: string[]): void {
         packages.forEach(async (pkg) => {
@@ -178,24 +160,30 @@ export class InteractionHandler {
         });
     }
 
+    /**
+     * Loops through each file of a given package.
+     * @param pkg The directory where the commands are.
+     * @since v1.0
+     */
     private async registerCommandsAndOrComponenets(pkg: string) {
-        const basePath = path.join(CommandUtils.getRootPath(), pkg);
+        const basePath = path.join(getRootPath(), pkg);
         const files = await fs.readdir(basePath);
         for (const file of files) {
             const filePath = path.join(basePath, file);
             const stat = await fs.lstat(filePath);
             if (stat.isDirectory()) this.registerCommandsAndOrComponenets(path.join(pkg, file));
             if (file.endsWith('.js') || file.endsWith('.ts')) {
-                try {
-                    const { default: Command } = await import(filePath);
-                    const command = new Command();
-                    if(command instanceof SlashCommand) 
-                        this.slashCommands.push(command);
-                    if(command instanceof ContextCommand) 
-                        this.contextCommands.push(command);
-                    if(command instanceof ComponentHandler)
-                        this.putComponentHandlers(command);
-                } catch (err) {DIH4DJSLogger.error(err)}
+                const { default: Command } = await import(filePath);
+                const commandOrHandler = new Command();
+                if(commandOrHandler instanceof SlashCommand) {
+                    this.slashCommands.push(commandOrHandler);
+                }
+                if(commandOrHandler instanceof ContextCommand) {
+                    this.contextCommands.push(commandOrHandler);
+                }
+                if(commandOrHandler instanceof ComponentHandler) {
+                    this.dih4djs.componentManager.putComponentHandlers(commandOrHandler);
+                }
             }
         }
     }
@@ -226,9 +214,7 @@ export class InteractionHandler {
                 .forEach((s) => (commandData as SlashCommandBuilder).addSubcommand(s));
         }
         this.slashCommandIndex.set(CommandUtils.buildCommandPath(commandData.name), command);
-        if(!this.dih4djs.getConfig().isLoggingDisabled()) {
-            DIH4DJSLogger.info("Registered command: /%s (%ss)".replace("%s", command.getCommandData().name).replace("%ss", command.getRegistrationType().toString()));
-        }
+        DIH4DJSLogger.info(`Registered command: /${command.getCommandData().name} (${command.registrationType})`, DIH4DJSLogger.Type.SlashCommandRegistered);
         return commandData;
     }
 
@@ -268,9 +254,7 @@ export class InteractionHandler {
                     commandPath = CommandUtils.buildCommandPath(command.getCommandData().name, subGroupName, subcommand.getCommandData().name);
                 }
                 this.subcommandIndex.set(commandPath, subcommand);
-                if(!this.dih4djs.getConfig().isLoggingDisabled()) {
-                    DIH4DJSLogger.info("Registered command: /%s (%ss)".replace("%s", command.getCommandData().name).replace("%ss", command.getRegistrationType().toString()));
-                }
+                DIH4DJSLogger.info(`Registered command: /${commandPath} (${command.registrationType})`, DIH4DJSLogger.Type.SlashCommandRegistered);
                 subDataList.push(subcommand.getCommandData());
             }
         }
@@ -291,6 +275,11 @@ export class InteractionHandler {
         return commands;
     }
 
+    /**
+     * 
+     * @param command 
+     * @returns 
+     */
     private getContextCommandData(command: ContextCommand<any>) {
         const data = command.getCommandData();
         if(data === null) {
@@ -305,49 +294,39 @@ export class InteractionHandler {
             DIH4DJSLogger.error("Invalid command type %t for Context Command! It will be ignored.".replace("%t", data.type));
             return null;
         }
-        if(!this.dih4djs.getConfig().isLoggingDisabled()) {
-            DIH4DJSLogger.info("Registered context command: %s (%ss)".replace("%s", data.name).replace("%ss", command.getRegistrationType().toString()));
-        }
+        DIH4DJSLogger.info(`Registered context command: ${data.name} (${command.registrationType})`, DIH4DJSLogger.Type.ContextCommandRegistered);
         return data;
     }
 
     /**
-     * Register all {@link ComponentHandler}s
-     * @param handler {@link ComponentHandler} instance
-     * @returns 
-     */
-    private putComponentHandlers(handler?: ComponentHandler): void {
-        if(handler === null) return;
-        handler?.getButtonIds().forEach(s => this.buttonHandlers.set(s, handler));
-        handler?.getSelectMenuIds().forEach(s => this.selectMenuHandlers.set(s, handler));
-        handler?.getModalIds().forEach(s => this.modalHandlers.set(s, handler));
-    }
-
-    /**
      * Handle all {@link ChatInputCommandInteraction}s
-     * @param interaction SlashCommand interaction response
+     * @param interaction SlashCommand interaction response.
+     * @since v1.0
      */
     public handleSlashCommand(interaction: ChatInputCommandInteraction) {
         var slashcommand = this.slashCommandIndex.get(interaction.commandName)!;
-        var subcommand = this.subcommandIndex.get(interaction.commandName)!;
+        var subcommand = this.subcommandIndex.get(CommandUtils.buildCommandPath(interaction.commandName, interaction.options.getSubcommand(false)!));
         if(slashcommand === null && subcommand === null
                 || slashcommand === undefined && subcommand === undefined) {
-            throw new Error("Slash command %s is not registered.".replace("%s", interaction.commandName));
+            DIH4DJSLogger.warn(`Couldn't find slashcommand ${interaction.commandName}.`, DIH4DJSLogger.Type.SlashCommandNotFound);
         } else {
-            if(slashcommand === null) {
-                var base = subcommand.getParent()!;
-                if(this.passesRequirements(interaction, base) && this.passesRequirements(interaction, subcommand)) {
-                    subcommand?.execute(this.dih4djs.getClient(), interaction);
-                }
-            } else if(this.passesRequirements(interaction, slashcommand)) {
-                slashcommand.execute(this.dih4djs.getClient(), interaction);
+            if(subcommand === undefined) {
+                DIH4DJSLogger.warn(`Could not find subcommand ${interaction.options.getSubcommand(false)}`, DIH4DJSLogger.Type.SlashCommandNotFound);
+            }
+            var base = subcommand?.getParent();
+            if(interaction.options.getSubcommand(false) !== null && this.passesRequirements(interaction, subcommand!) 
+                    && this.passesRequirements(interaction, base!)) {
+                return subcommand!.execute(this.dih4djs.client, interaction);
+            } else if (this.passesRequirements(interaction, slashcommand)) {
+                return slashcommand.execute(this.dih4djs.client, interaction);
             }
         }
     }
 
     /**
      * Handle all {@link UserContextMenuCommandInteraction}s
-     * @param interaction UserContext interaction response
+     * @param interaction UserContext interaction response.
+     * @since v1.0
      */
     public handleUserContextCommand(interaction: UserContextMenuCommandInteraction) {
         var context = this.userContextIndex.get(interaction.commandName)!;
@@ -355,14 +334,15 @@ export class InteractionHandler {
             throw new Error("UserContext command %s is not registered.".replace("%s", interaction.commandName));
         } else {
             if(this.passesRequirements(interaction, context)) {
-                context.execute(this.dih4djs.getClient(), interaction);
+                context.execute(this.dih4djs.client, interaction);
             }
         }
     }
 
     /**
      * Handle all {@link MessageContextMenuCommandInteraction}s
-     * @param interaction MessageContext interaction response
+     * @param interaction MessageContext interaction response.
+     * @since v1.0
      */
     public handleMessageContextCommand(interaction: MessageContextMenuCommandInteraction) {
         var context = this.messageContextIndex.get(interaction.commandName)!;
@@ -370,47 +350,8 @@ export class InteractionHandler {
             throw new Error("MessageContext command %s is not registered.".replace("%s", interaction.commandName));
         } else {
             if(this.passesRequirements(interaction, context)) {
-                context.execute(this.dih4djs.getClient(), interaction);
+                context.execute(this.dih4djs.client, interaction);
             }
-        }
-    }
-
-    /**
-     * Handle all {@link ButtonInteraction}s
-     * @param interaction Button interaction response
-     */
-    public handleButton(interaction: ButtonInteraction) {
-        var component = this.buttonHandlers.get(ComponentIdBuilder.split(interaction.customId)[0]!);
-        if(component === null || component === undefined) {
-            DIH4DJSLogger.warn("Button with the id %s could not be found.".replace("%s", interaction.customId))
-        } else {
-            component.handleButton(interaction);
-        }
-    }
-
-    /**
-     * Handle all {@link SelectMenuInteraction}s
-     * @param interaction SelectMenu interaction response
-     */
-    public handleSelectMenu(interaction: SelectMenuInteraction) {
-        var component = this.selectMenuHandlers.get(ComponentIdBuilder.split(interaction.customId)[0]!);
-        if(component === null || component === undefined) {
-            DIH4DJSLogger.warn("Select menu with the id %id% could not be found.".replace("%id%", interaction.customId));
-        } else {
-            component.handleSelectMenu(interaction);
-        }
-    }
-
-    /**
-     * Handle all {@link ModalSubmitInteraction}s
-     * @param interaction Modal interaction response
-     */
-    public handleModal(interaction: ModalSubmitInteraction) {
-        var modal = this.modalHandlers.get(ComponentIdBuilder.split(interaction.customId)[0]!);
-        if(modal === null || modal === undefined) {
-            DIH4DJSLogger.warn("Modal with the id %id% could not be found.".replace("%id%", interaction.customId));
-        } else {
-            modal.handleModalSubmit(interaction);
         }
     }
 
@@ -420,11 +361,12 @@ export class InteractionHandler {
      * @param interaction The {@link BaseInteraction}
      * @param command The {@link RestrictedCommand} which contains the (possible) restrictions.
      * @returns Whether the event was fired
+     * @since v1.0
      */
     private passesRequirements(interaction: BaseInteraction, command: RestrictedCommand) {
         var userId = interaction.user.id;
-        var userIds = command.getRequiredUsers();
-        var roleIds = command.getRequiredRoles();
+        var userIds = command.requiredGuilds;
+        var roleIds = command.requiredRoles;
         if(userIds !== null && userIds.length !== 0 && !roleIds.includes(userId)) {
             return false;
         }
@@ -435,12 +377,15 @@ export class InteractionHandler {
             }
         }
         // Check if the command has enabled some sort of cooldown
-        if(command.getCommandCooldown() !== 0) {
+        if(command.cooldown !== 0) {
             if(command.hasCooldown(userId)) {
                 return false;
             } else {
-                command.applyCooldown(userId, (Date.now() + command.getCommandCooldown()));
+                command.applyCooldown(userId, (Date.now() + command.cooldown));
             }
+        }
+        if(interaction.isChatInputCommand()) {
+            console.log(interaction.options.getSubcommand(false));
         }
         return true;
     }

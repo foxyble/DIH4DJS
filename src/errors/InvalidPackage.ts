@@ -13,16 +13,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-import type { Client } from "discord.js";
 
 /**
- * Represents a command that can be executed.
- * @param <E> the interaction to pass to the command.
+ * An error that is thrown when a command package is found to be empty.
+ * @since v1.1
  */
-export interface ExecutableCommand<E> {
-    /**
-     * The method that gets called once the command gets executed.
-     * @param interaction 
-     */
-    execute(client: Client, interaction: E): void;
+export class InvalidPackage extends Error {
+    constructor(message: string) {
+        super(message, { cause: "Command packages cannot be empty or null!" });
+    }
 }

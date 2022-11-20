@@ -19,15 +19,16 @@ import {
     SlashCommandSubcommandBuilder, 
     SlashCommandSubcommandGroupBuilder,
     ApplicationCommand,
-    ApplicationCommandOptionType,
-    SlashCommandSubcommandsOnlyBuilder
+    ApplicationCommandOptionType
 } from "discord.js";
 
-import { InteractionHandler } from "../../../InteractionHandler";
-import { AppCommand } from "./AppCommand";
-import { BaseCommand } from "./BaseCommand";
+import { InteractionManager } from "../managers/InteractionManager";
+import { BaseApplicationCommand } from "./BaseApplicationCommand";
 
-export abstract class SlashCommand extends BaseCommand<ChatInputCommandInteraction, SlashCommandBuilder|Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">|SlashCommandSubcommandsOnlyBuilder> {
+/**
+ * @since v1.0
+ */
+export abstract class SlashCommand extends BaseApplicationCommand<ChatInputCommandInteraction, SlashCommandBuilder> {
     private subcommands: SlashCommand.Subcommand[] = Array.of();
     private subcommandGroups: SlashCommand.SubcommandGroup[] = Array.of();
 
@@ -74,12 +75,12 @@ export abstract class SlashCommand extends BaseCommand<ChatInputCommandInteracti
 
     public asCommand() {
         if(this.getCommandData() === null) return null;
-        return InteractionHandler.getRetrievedCommands().get(this.getCommandData().name);
+        return InteractionManager.getRetrievedCommands().get(this.getCommandData().name);
     }
 }
 
 export namespace SlashCommand {
-    export abstract class Subcommand extends AppCommand<ChatInputCommandInteraction, SlashCommandSubcommandBuilder> {
+    export abstract class Subcommand extends BaseApplicationCommand<ChatInputCommandInteraction, SlashCommandSubcommandBuilder> {
         public parent: SlashCommand|null = null;
 
         /**
@@ -104,7 +105,7 @@ export namespace SlashCommand {
             return subcommands.filter(c => c.name === this.getCommandData().name)[0]||null;
         }
     }
-    export class SubcommandGroup extends AppCommand<ChatInputCommandInteraction, SlashCommandSubcommandGroupBuilder> {
+    export class SubcommandGroup extends BaseApplicationCommand<ChatInputCommandInteraction, SlashCommandSubcommandGroupBuilder> {
         private subcommands: Subcommand[];
 
         private constructor(data: SlashCommandSubcommandGroupBuilder, subcommands: Subcommand[]) {
@@ -118,7 +119,7 @@ export namespace SlashCommand {
          * @param subcommands An array of {@link Subcommand}s.
          * @returns The {@link SlashCommandSubcommandGroupBuilder}.
          */
-        public of(data: SlashCommandSubcommandGroupBuilder, ...subcommands: Subcommand[]): SubcommandGroup {
+        public static of(data: SlashCommandSubcommandGroupBuilder, ...subcommands: Subcommand[]): SubcommandGroup {
             if(data === null) throw new Error("SubcommandGroupData may not be null!");
             if(subcommands === null || subcommands.length === 0) throw new Error("Subcommands may not be empty!");
             return new SubcommandGroup(data, subcommands);

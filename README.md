@@ -16,17 +16,22 @@ For a more indepth description on how to register commands feel free to look at 
 ## Setting up the handler
 ```javascript
 const { Client } = require('discord.js');
-const { DIH4DJSBuilder } = require('dih4djs');
+const { DIH4DJS, DIH4DJSLogger } = require('dih4djs');
 
 const client = new Client({
     intents: [YOUR_INTENTS]
 });
 
-const dih4djs = new DIH4DJSBuilder()
-    .setClient(client)
-    .setCommandPackages("CommandDir1", "CommandDir2")
-    .setTestingGuild("TestGuildId")
-    .build()
+const dih4djs = new DIH4DJS(client, {
+    packages: ["./commands/", "./components/"],
+    registerOnReady: true,
+    logging: {
+        enabled: true,
+        disabled: [
+            DIH4DJSLogger.Type.SlashCommandRegistered
+        ]
+    }
+});
 
 client.login("YOUR_TOKEN_HERE");
 ```
