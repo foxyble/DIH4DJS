@@ -15,12 +15,15 @@
  */
 
 import type { ApplicationCommand, Guild } from "discord.js";
-import type { ContextCommand } from "./interactions/commands/application/ContextCommand";
-import type { SlashCommand } from "./interactions/commands/application/SlashCommand";
+import type { ContextCommand } from "./ContextCommand";
+import type { SlashCommand } from "./SlashCommand";
 
-import { Pair } from "./utils/Pair";
-import { DIH4DJSLogger } from "./DIH4DJSLogger";
+import { Pair } from "../util/Pair";
+import { DIH4DJSLogger } from "../DIH4DJSLogger";
 
+/**
+ * @since v1.0
+ */
 export class SmartQueue {
     private slashCommands: SlashCommand[];
     private contextCommands: ContextCommand<any>[];
@@ -30,24 +33,44 @@ export class SmartQueue {
         this.contextCommands = contextCommands;
     }
 
-    public checkGlobal(existing: ApplicationCommand[]) {
+    /**
+     * Compares the specified {@link Guild} with aready existing commands, removes duplicates.
+     * @param existing A list of all existing {@link ApplicationCommand}
+     * @returns A {@link Pair} with the remaining {@link SlashCommandBuilder} & {@link ContextMenuCommandBuilder}.
+     * @since v1.0
+     */
+    checkGlobal(existing: ApplicationCommand[]) {
         if(existing.length !== 0) {
             return this.removeDuplicates(existing);
         }
         return new Pair(this.slashCommands, this.contextCommands);
     }
 
-    public checkGuild(existing: ApplicationCommand[], guild: Guild) {
+    /**
+     * Compares the specified {@link Guild} with aready existing commands, removes duplicates.
+     * @param existing A list of all existing {@link ApplicationCommand}
+     * @param guild The {@link Guild} to retrieve the already existing commands.
+     * @returns A {@link Pair} with the remaining {@link SlashCommandBuilder} & {@link ContextMenuCommandBuilder}.
+     * @since v1.0
+     */
+    checkGuild(existing: ApplicationCommand[], guild: Guild) {
         if(existing.length !== 0) {
             return this.removeDuplicates(existing, guild);
         }
         return new Pair(this.slashCommands, this.contextCommands);
     }
 
+    /**
+     * Removes all duplicate {@link ApplicationCommand}
+     * @param existing A list of all existing {@link ApplicationCommand}
+     * @param guild An optional guild parameter which is used with {@link SmartQueue#checkGuild}
+     * @returns A {@link Pair} with the remaining {@link SlashCommandBuilder} & {@link ContextMenuCommandBuilder}.
+     * @since v1.0
+     */
     private removeDuplicates(existing: ApplicationCommand[], guild?: Guild) {
         var global: boolean = guild === undefined;
         var prefix = `[${global ? "Global" : guild!.name}] `;
-        DIH4DJSLogger.info(prefix + `Found ${existing.length} existing command(s)`);
+        DIH4DJSLogger.info(prefix + `Found ${existing.length} existing command(s)`, DIH4DJSLogger.Type.SmartQueue);
         existing.forEach((cmd, idx) => {
             if(this.contextCommands.map((data) => cmd.name === data.getCommandData().name)
                     || this.slashCommands.map((data) => cmd.name === data.getCommandData().name)) {

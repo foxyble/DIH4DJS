@@ -13,21 +13,24 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-import type { RegistrationType } from "./RegistrationType";
+import type { RegistrationType } from "../util/RegistrationType";
 
-import { DIH4DJS } from "../../../index";
+import { DIH4DJS } from "../DIH4DJS";
 import { AppCommand } from "./AppCommand";
 
+/**
+ * @since v1.0
+ */
 export abstract class BaseCommand<E, T> extends AppCommand<E, T> {
-    private registrationType: RegistrationType = DIH4DJS.getDefaultRegistrationType();
+    private _registrationType: RegistrationType = DIH4DJS.defaultRegistrationType;
     private queueableGuilds: string[] = Array.of();
 
     /**
      * The {@link RegistrationType} the command got assigned.
      * @returns the {@link RegistrationType}.
      */
-    public getRegistrationType(): RegistrationType {
-        return this.registrationType;
+    get registrationType(): RegistrationType {
+        return this._registrationType;
     }
 
     /**
@@ -35,7 +38,7 @@ export abstract class BaseCommand<E, T> extends AppCommand<E, T> {
      * @param type the {@link RegistrationType} to set.
      */
     public setRegistrationType(type: RegistrationType): void {
-        this.registrationType = type;
+        this._registrationType = type;
     }
 
     public setQueuableGuilds(...guilds: string[]) {

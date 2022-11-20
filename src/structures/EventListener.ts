@@ -13,8 +13,22 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-export enum RegistrationType {
-    Global,
-    Private,
-    Guild
+
+/**
+ * @since v1.0
+ */
+abstract class EventListener {
+    private eventName: string;
+
+    constructor(name: string) {
+        this.eventName = name;
+    }
+
+    public getEventName() {
+        return this.eventName;
+    }
+
+    abstract onExecute(..._args: any): void;
 }
+
+export default EventListener;

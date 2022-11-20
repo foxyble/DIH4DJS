@@ -14,98 +14,69 @@
  * GNU General Public License for more details.
  */
 import { Collection } from "discord.js";
-import { ComponentHandler } from "../ComponentHandler";
+import { ComponentHandler, ComponentHandlerOptions } from "./ComponentHandler";
+
+export type CommandOptions = {
+    requiredGuilds?: string[];
+    requiredUsers?: string[];
+    requiredRoles?: string[];
+    permissions?: bigint[];
+    cooldown?: number;
+    components: ComponentHandlerOptions;
+}
 
 /**
  * Represents a restricted command.
+ * @since v1.1
  */
 export abstract class RestrictedCommand extends ComponentHandler {
     private COOLDOWN_CACHE: Collection<string, RestrictedCommand.Cooldown> = new Collection();
 
-    private requiredGuilds: string[] = Array.of();
-    private requiredPermissions: bigint[] = Array.of();
-    private requiredUsers: string[] = Array.of();
-    private requiredRoles: string[] = Array.of();
-    private commandCooldown: number = 0;
+    private options: CommandOptions;
 
-    /**
-     * Allows to required a set of {@link Guild}s only in which the command can get executed.
-     * @param guilds An array of guild ids.
-     */
-    public setRequiredGuilds(...guilds: string[]) {
-        this.requiredGuilds = guilds;
+    constructor(options: CommandOptions) {
+        super(options.components);
+        this.options = options;
     }
 
     /**
      * The required guilds the command can be executed in.
      * @returns The array of guild ids.
      */
-    public getRequiredGuilds(): string[] {
-        return this.requiredGuilds;
+    get requiredGuilds(): string[] {
+        return this.options.requiredGuilds!;
     }
 
     /**
      * The list of permissions that is required by the user.
      * @returns The required permissions
      */
-    public getRequiredPermissions(): bigint[] {
-        return this.requiredPermissions;
-    }
-
-    /**
-     * Set the required permissions the user needs to execute the command.
-     * @param permissions List of permissions
-     */
-    public setRequiredPermissions(...permissions: bigint[]): void {
-        this.requiredPermissions = permissions;
+    get permissions(): bigint[] {
+        return this.options.permissions!;
     }
 
     /**
      * The list of user ids that are allowed to execute the command.
      * @returns The list of user ids.
      */
-    public getRequiredUsers(): string[] {
-        return this.requiredUsers;
-    }
-
-    /**
-     * Allows a set of users to execute the command.
-     * @param users The list of user ids.
-     */
-    public setRequiredUsers(...users: string[]): void {
-        this.requiredUsers = users;
+    get requiredUsers(): string[] {
+        return this.options.requiredUsers!;
     }
 
     /**
      * The list of role ids allowed to execute the command.
      * @returns The list of role ids.
      */
-    public getRequiredRoles(): string[] {
-        return this.requiredRoles;
-    }
-
-    /**
-     * Allows a set of role ids to execute the command.
-     * @param roles The list of role ids.
-     */
-    public setRequiredRoles(...roles: string[]): void {
-        this.requiredRoles = roles;
-    }
-
-    /**
-     * Allows to set cooldown for this command.
-     * @param duration The duration the user will have to wait in milliseconds
-     */
-    public setCommandCooldown(duration: number) {
-        this.commandCooldown = duration;
+    get requiredRoles(): string[] {
+        return this.options.requiredRoles!;
     }
 
     /**
      * Returns the timestamp the user has to wait between command executions.
      * @returns The timestamp
      */
-    public getCommandCooldown(): number {
-        return this.commandCooldown;
+    get cooldown(): number {
+        return this.options.cooldown!;
     }
 
     /**
@@ -113,7 +84,7 @@ export abstract class RestrictedCommand extends ComponentHandler {
      * @param userId The targets' user id.
      * @param nextUse The next time the command can be used.
      */
-    public applyCooldown(userId: string, nextUse: number) {
+    applyCooldown(userId: string, nextUse: number) {
         this.COOLDOWN_CACHE.set(userId, new RestrictedCommand.Cooldown(Date.now(), nextUse));
     }
 
@@ -124,7 +95,7 @@ export abstract class RestrictedCommand extends ComponentHandler {
      * @param userId The targets' user id
      * @returns The timestamp at which the command can be executed again.
      */
-    public retrieveCooldown(userId: string) {
+    retrieveCooldown(userId: string) {
         var cooldown = this.COOLDOWN_CACHE.get(userId);
         if(cooldown === null || cooldown === undefined) 
             return new RestrictedCommand.Cooldown(Date.now(), Date.now());
@@ -136,36 +107,32 @@ export abstract class RestrictedCommand extends ComponentHandler {
      * @param userId The target user id.
      * @returns Whether the command can be executed.
      */
-    public hasCooldown(userId: string): boolean {
+    hasCooldown(userId: string): boolean {
         const cooldown = this.retrieveCooldown(userId);
-        return cooldown.getLastUse() <= cooldown.getNextUse() ? true : false;
+        return cooldown.lastUse <= cooldown.nextUse ? true : false;
     }
 }
 
 export namespace RestrictedCommand {
     export class Cooldown {
-        private lastUse: number;
-        private nextUse: number;
+        private _lastUse: number;
+        private _nextUse: number;
 
         constructor(lastUse: number, nestUse: number) {
-            this.lastUse = lastUse;
-            this.nextUse = nestUse;
+            this._lastUse = lastUse;
+            this._nextUse = nestUse;
         }
 
         /**
          * Gets you the {@link Date} of when the user can use the {@link RestrictedCommand} the nest time.
          * @returns The nest {@link Date} the command may be used again.
          */
-        public getNextUse(): number {
-            return this.nextUse;
-        }
+        get nextUse(): number { return this._nextUse; }
 
         /**
          * Gets you the {@link Date} the user has used {@link RestrictedCommand} the last time.
          * @returns The last {@link Date} the command was used.
          */
-        public getLastUse(): number {
-            return this.lastUse;
-        }
+        get lastUse(): number { return this._lastUse; }
     }
 }

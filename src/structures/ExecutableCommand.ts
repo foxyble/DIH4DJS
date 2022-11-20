@@ -14,33 +14,16 @@
  * GNU General Public License for more details.
  */
 import type { Client } from "discord.js";
-import type { ExecutableCommand } from "../ExecutableCommand";
 
-import { RestrictedCommand } from "../RestrictedCommand";
-
-export abstract class AppCommand<E, T> extends RestrictedCommand implements ExecutableCommand<E> {
-    private data!: T;
-
-    constructor(data: T) {
-        super();
-        this.data = data;
-    }
-
+/**
+ * Represents a command that can be executed.
+ * @param <E> the interaction to pass to the command.
+ * @since v1.0
+ */
+export interface ExecutableCommand<E> {
     /**
-     * Sets the command data.
-     * @param data The desired command builder
+     * The method that gets called once the command gets executed.
+     * @param interaction 
      */
-    public setCommandData(data: any) {
-        this.data = (data as T);
-    }
-
-    /**
-     * Gets the command data.
-     * @returns The command builder
-     */
-    public getCommandData(): T {
-        return this.data;
-    }
-
-    execute(_client: Client, _interaction: E): void {}
+    execute(client: Client, interaction: E): void;
 }

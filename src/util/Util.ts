@@ -13,25 +13,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-import type { DIH4DJS } from "../DIH4DJS";
-import EventListener from "../structures/EventListener";
-import { Events } from "discord.js";
+import path from 'node:path';
 
 /**
- * ClientReady event listener.
+ * Gets the root path of the project.
+ * @returns The root path of project.
  * @since v1.0
  */
-class onReady extends EventListener {
-    constructor() {
-        super(Events.ClientReady);
-    }
-
-    onExecute(dih4djs: DIH4DJS): void {
-        if(dih4djs.packages === null) return;
-        if(dih4djs.isRegisterOnReady && dih4djs.interactionManager !== null) {
-            dih4djs.registerInteractions();
-        }
+export function getRootPath(): string {
+    const main = path.resolve(__dirname);
+    if(main !== undefined && main.includes("/node_modules")) {
+        return main.split("/node_modules")[0]!;
+    } else {
+        return path.dirname(require.main?.filename!);
     }
 }
-
-export default onReady;

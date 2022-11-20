@@ -16,6 +16,7 @@
 
 /**
  * Base class for making component ids.
+ * @since v1.0
  */
 export class ComponentIdBuilder {
     private static seperator = ":";

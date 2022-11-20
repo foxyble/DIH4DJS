@@ -19,38 +19,35 @@ import {
     ApplicationCommandType, 
     ContextMenuCommandType, 
     SlashCommandSubcommandBuilder,
-    SlashCommandSubcommandGroupBuilder
+    SlashCommandSubcommandGroupBuilder,
+    ApplicationCommandOptionType
 } from 'discord.js';
 
+/**
+ * 
+ * @since v1.0
+ */
 export class Commands {
     /**
      * Create a slash command builder.
      * @param name The command name
      * @param description The command description
-     * @returns {@link SlashCommandBuilder}
+     * @returns 
+     * @since v1.1
      */
-    public static slash(name: string, description: string): SlashCommandBuilder {
-        return new SlashCommandBuilder().setName(name).setDescription(description);
-    }
-
-    /**
-     * Create a slashcommand subcommand builder.
-     * @param name The command name
-     * @param description The command description
-     * @returns {@link SlashCommandSubcommandBuilder}
-     */
-    public static slashSub(name: string, description: string): SlashCommandSubcommandBuilder {
-        return new SlashCommandSubcommandBuilder().setName(name).setDescription(description);
-    }
-
-    /**
-     * Create a slashcommand subcommand group builder.
-     * @param name The command name
-     * @param description The command description
-     * @returns {@link SlashCommandSubcommandGroupBuilder}
-     */
-    public static slashGroup(name: string, description: string): SlashCommandSubcommandGroupBuilder {
-        return new SlashCommandSubcommandGroupBuilder().setName(name).setDescription(description);
+    public static slash(name: string, description: string, type?: ApplicationCommandOptionType) {
+        var builder: SlashCommandSubcommandBuilder|SlashCommandBuilder|SlashCommandSubcommandGroupBuilder;
+        switch(type) {
+            case ApplicationCommandOptionType.Subcommand:
+                builder = new SlashCommandSubcommandBuilder();
+                break;
+            case ApplicationCommandOptionType.SubcommandGroup:
+                builder = new SlashCommandSubcommandGroupBuilder();
+                break;
+            default:
+                builder = new SlashCommandBuilder();
+        }
+        return builder.setName(name).setDescription(description);
     }
 
     /**
@@ -58,6 +55,7 @@ export class Commands {
      * @param type The command type
      * @param name The command name
      * @returns {@link ContextMenuCommandBuilder}
+     * @since v1.0
      */
     public static context(type: ContextMenuCommandType, name: string): ContextMenuCommandBuilder {
         return new ContextMenuCommandBuilder().setType(type).setName(name);
@@ -67,8 +65,9 @@ export class Commands {
      * Create a message context command builder.
      * @param name The command name
      * @returns {@link ContextMenuCommandBuilder}
+     * @since v1.0
      */
-    public static contextMessage(name: string): ContextMenuCommandBuilder {
+    public static message(name: string): ContextMenuCommandBuilder {
         return new ContextMenuCommandBuilder().setType(ApplicationCommandType.Message).setName(name);
     }
 
@@ -76,8 +75,9 @@ export class Commands {
      * Create a user context command builder.
      * @param name The command name.
      * @returns {@link ContextMenuCommandBuilder}
+     * @since v1.0
      */
-    public static contextUser(name: string): ContextMenuCommandBuilder {
+    public static user(name: string): ContextMenuCommandBuilder {
         return new ContextMenuCommandBuilder().setType(ApplicationCommandType.User).setName(name);
     }
 }

@@ -13,47 +13,51 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-import type { RegistrationType } from '../interactions/commands/application/RegistrationType';
-import type { SlashCommand } from '../interactions/commands/application/SlashCommand';
-import type { ContextCommand } from '../interactions/commands/application/ContextCommand';
-
-import path from 'node:path';
+import type { RegistrationType } from './RegistrationType';
+import type { SlashCommand } from '../structures/SlashCommand';
+import type { ContextCommand } from '../structures/ContextCommand';
 import { Pair } from './Pair';
 
+/**
+ * A utility class that contains some useful methods regarding commands.
+ * @since v1.0
+ */
 export class CommandUtils {
     /**
      * Used to create one command name out of the SlashCommand, SlashSubCommandGroup and SlashSubCommand.
      * @param args The arguments as {@link string}s you want to join together.
-     * @returns combined string
+     * @returns Combined string
+     * @since v1.0
      */
     public static buildCommandPath(...args: string[]) {
         return args.join(" ");
     }
 
-    public static filterByType(pair: Pair<SlashCommand[], ContextCommand<any>[]>, registrationType: RegistrationType) {
+    /**
+     * Filter given commands by {@link RegistrationType}.
+     * @param pair The commands to be filtered.
+     * @param registrationType The type to filter by.
+     * @returns {@link Pair} of filtered commands.
+     * @since v1.0
+     */
+    public static filterByType(pair: Pair<SlashCommand[], ContextCommand<any>[]>, registrationType: RegistrationType): Pair<SlashCommand[], ContextCommand<any>[]> {
         return new Pair(
-            pair.getFirst().filter(c => c.getRegistrationType() === registrationType),
-            pair.getSecond().filter(c => c.getRegistrationType() === registrationType)
+            pair.first.filter(c => c.registrationType === registrationType),
+            pair.second.filter(c => c.registrationType === registrationType)
         );
     }
 
+    /**
+     * Builds a comma spread list of command names.
+     * @param command The list of context commands.
+     * @param slash The list of slash commands.
+     * @returns A comma spread list of command names.
+     * @since v1.0
+     */
     public static getNames(command: ContextCommand<any>[], slash: SlashCommand[]) {
         var names: string = "";
         command.forEach((c) => names += names.length === 0 ? `${c.getCommandData().name}` : `, ${c.getCommandData().name}`);
         slash.forEach((c) => names += names.length === 0 ? `${c.getCommandData().name}` : `, ${c.getCommandData().name}`);
         return names;
-    }
-
-    /**
-     * Gets the root path of the project.
-     * @returns The root path of project.
-     */
-    public static getRootPath(): string {
-        const main = path.resolve(__dirname);
-        if(main !== undefined && main.includes("/node_modules")) {
-            return main.split("/node_modules")[0]!;
-        } else {
-            return path.dirname(require.main?.filename!);
-        }
     }
 }

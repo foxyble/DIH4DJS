@@ -13,18 +13,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-abstract class EventListener {
-    private eventName: string;
+import type { 
+    ContextMenuCommandBuilder, 
+    MessageContextMenuCommandInteraction, 
+    UserContextMenuCommandInteraction 
+} from "discord.js";
 
-    constructor(name: string) {
-        this.eventName = name;
-    }
+import { BaseCommand } from "./BaseCommand";
 
-    public getEventName() {
-        return this.eventName;
-    }
+/**
+ * @since v1.0
+ */
+export abstract class ContextCommand<E> extends BaseCommand<E, ContextMenuCommandBuilder> {}
 
-    abstract onExecute(..._args: any): void;
+export namespace ContextCommand {
+    export abstract class User extends ContextCommand<UserContextMenuCommandInteraction> {}
+    export abstract class Message extends ContextCommand<MessageContextMenuCommandInteraction> {}
 }
-
-export default EventListener;

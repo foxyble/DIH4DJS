@@ -13,17 +13,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-import type { 
-    ContextMenuCommandBuilder, 
-    MessageContextMenuCommandInteraction, 
-    UserContextMenuCommandInteraction 
-} from "discord.js";
 
-import { BaseCommand } from "./BaseCommand";
-
-export abstract class ContextCommand<E> extends BaseCommand<E, ContextMenuCommandBuilder> {}
-
-export namespace ContextCommand {
-    export abstract class User extends ContextCommand<UserContextMenuCommandInteraction> {}
-    export abstract class Message extends ContextCommand<MessageContextMenuCommandInteraction> {}
+/**
+ * @since v1.0
+ */
+export enum RegistrationType {
+    Global = "Global",
+    Private = "Private",
+    Guild = "Guild"
 }
