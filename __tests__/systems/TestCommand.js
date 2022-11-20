@@ -2,18 +2,13 @@
 
 const { ChatInputCommandInteraction, Client } = require("discord.js");
 const { Commands, SlashCommand } = require("../../source");
+const YesSubcommand = require("./YesSubcommand");
 
 class TestCommand extends SlashCommand {
     constructor() {
         super(Commands.slash("test", "OMG! Test command."));
-    }
 
-    /**
-     * @param {Client} client The discord.js client
-     * @param {ChatInputCommandInteraction} interaction 
-     */
-    execute(client, interaction) {
-        interaction.reply({ content: "test command", ephemeral: true });
+        this.addSubcommands(new YesSubcommand());
     }
 }
 

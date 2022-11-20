@@ -14,10 +14,6 @@ const client = new Client({
     ]
 });
 
-const dih4djs = new DIH4DJS(client, {
-    packages: ["./systems/"]
-});
+const dih4djs = new DIH4DJS(client, { packages: ["./systems/"] });
 
 client.login(process.env.TOKEN);
-
-console.log('logged in');
