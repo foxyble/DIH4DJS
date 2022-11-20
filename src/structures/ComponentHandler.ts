@@ -29,17 +29,24 @@ export type ComponentHandlerOptions = {
  * @since v1.1
  */
 export abstract class ComponentHandler {
-    private componentOptions: ComponentHandlerOptions;
+    private _handledButtonIds: string[] = Array.of();
+    private _handledSelectMenuIds: string[] = Array.of();
+    private _handledModalIds: string[] = Array.of();
 
     constructor(options: ComponentHandlerOptions) {
-        this.componentOptions = options;
+        if(options.handledButtonIds !== undefined)
+            this._handledButtonIds = options.handledButtonIds;
+        if(options.handledSelectMenuIds !== undefined)
+            this._handledSelectMenuIds = options.handledSelectMenuIds;
+        if(options.handledModalIds !== undefined)
+            this._handledModalIds = options.handledModalIds;
     }
 
     /**
      * 
      */
     get handledButtonIds(): string[] {
-        return this.componentOptions.handledButtonIds! || [];
+        return this._handledButtonIds! || [];
     }
     handleButton(_interaction: ButtonInteraction): void {};
 
@@ -47,7 +54,7 @@ export abstract class ComponentHandler {
      * 
      */
     get handledSelectMenuIds(): string[] {
-        return this.componentOptions.handledSelectMenuIds! || [];
+        return this._handledSelectMenuIds;
     }
     handleSelectMenu(_interaction: SelectMenuInteraction): void {};
 
@@ -55,7 +62,7 @@ export abstract class ComponentHandler {
      * 
      */
     get handledModalIds(): string[] {
-        return this.componentOptions.handledModalIds! || [];
+        return this._handledModalIds;
     }
     handleModalSubmit(_interaction: ModalSubmitInteraction): void {};
 }

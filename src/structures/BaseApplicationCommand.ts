@@ -13,19 +13,22 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+import { DIH4DJS } from "../DIH4DJS";
 import type { Client } from "discord.js";
 import type { ExecutableCommand } from "./ExecutableCommand";
-
 import { RestrictedCommand, CommandOptions } from "./RestrictedCommand";
 
 /**
  * @since v1.0
  */
-export abstract class AppCommand<E, T> extends RestrictedCommand implements ExecutableCommand<E> {
+export abstract class BaseApplicationCommand<E, T> extends RestrictedCommand implements ExecutableCommand<E> {
     private data!: T;
 
     constructor(data: any, options?: CommandOptions) {
-        super(options ? options : AppCommand.createDefault());
+        super({
+            ...BaseApplicationCommand.createDefault(),
+            ...options
+        });
         this.data = (data as T);
     }
 
@@ -52,16 +55,9 @@ export abstract class AppCommand<E, T> extends RestrictedCommand implements Exec
      */
     static createDefault(): CommandOptions {
         return {
-            requiredGuilds: [],
-            requiredUsers: [],
-            requiredRoles: [],
-            permissions: [],
+            registrationType: DIH4DJS.defaultRegistrationType,
             cooldown: 0,
-            components: {
-                handledButtonIds: [],
-                handledSelectMenuIds: [],
-                handledModalIds: []
-            }
+            components: {}
         }
     }
 

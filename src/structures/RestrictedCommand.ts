@@ -14,9 +14,11 @@
  * GNU General Public License for more details.
  */
 import { Collection } from "discord.js";
+import type { RegistrationType } from "../util/RegistrationType";
 import { ComponentHandler, ComponentHandlerOptions } from "./ComponentHandler";
 
 export type CommandOptions = {
+    registrationType?: RegistrationType;
     requiredGuilds?: string[];
     requiredUsers?: string[];
     requiredRoles?: string[];
@@ -32,11 +34,19 @@ export type CommandOptions = {
 export abstract class RestrictedCommand extends ComponentHandler {
     private COOLDOWN_CACHE: Collection<string, RestrictedCommand.Cooldown> = new Collection();
 
-    private options: CommandOptions;
+    private _options: CommandOptions;
 
     constructor(options: CommandOptions) {
         super(options.components);
-        this.options = options;
+        this._options = options;
+    }
+
+    /**
+     * Gets the {@link RegistrationType} of the specified command.
+     * @returns {RegistrationType}.
+     */
+    get registrationType(): RegistrationType {
+        return this._options.registrationType!;
     }
 
     /**
@@ -44,7 +54,7 @@ export abstract class RestrictedCommand extends ComponentHandler {
      * @returns The array of guild ids.
      */
     get requiredGuilds(): string[] {
-        return this.options.requiredGuilds!;
+        return this._options.requiredGuilds! || [];
     }
 
     /**
@@ -52,7 +62,7 @@ export abstract class RestrictedCommand extends ComponentHandler {
      * @returns The required permissions
      */
     get permissions(): bigint[] {
-        return this.options.permissions!;
+        return this._options.permissions! || [];
     }
 
     /**
@@ -60,7 +70,7 @@ export abstract class RestrictedCommand extends ComponentHandler {
      * @returns The list of user ids.
      */
     get requiredUsers(): string[] {
-        return this.options.requiredUsers!;
+        return this._options.requiredUsers! || [];
     }
 
     /**
@@ -68,7 +78,7 @@ export abstract class RestrictedCommand extends ComponentHandler {
      * @returns The list of role ids.
      */
     get requiredRoles(): string[] {
-        return this.options.requiredRoles!;
+        return this._options.requiredRoles! || [];
     }
 
     /**
@@ -76,7 +86,7 @@ export abstract class RestrictedCommand extends ComponentHandler {
      * @returns The timestamp
      */
     get cooldown(): number {
-        return this.options.cooldown!;
+        return this._options.cooldown!;
     }
 
     /**

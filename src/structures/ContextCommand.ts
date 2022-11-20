@@ -18,13 +18,12 @@ import type {
     MessageContextMenuCommandInteraction, 
     UserContextMenuCommandInteraction 
 } from "discord.js";
-
-import { BaseCommand } from "./BaseCommand";
+import { BaseApplicationCommand } from "./BaseApplicationCommand";
 
 /**
  * @since v1.0
  */
-export abstract class ContextCommand<E> extends BaseCommand<E, ContextMenuCommandBuilder> {}
+export abstract class ContextCommand<E> extends BaseApplicationCommand<E, ContextMenuCommandBuilder> {}
 
 export namespace ContextCommand {
     export abstract class User extends ContextCommand<UserContextMenuCommandInteraction> {}

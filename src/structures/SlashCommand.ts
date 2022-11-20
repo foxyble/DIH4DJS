@@ -19,18 +19,16 @@ import {
     SlashCommandSubcommandBuilder, 
     SlashCommandSubcommandGroupBuilder,
     ApplicationCommand,
-    ApplicationCommandOptionType,
-    SlashCommandSubcommandsOnlyBuilder
+    ApplicationCommandOptionType
 } from "discord.js";
 
 import { InteractionManager } from "../managers/InteractionManager";
-import { AppCommand } from "./AppCommand";
-import { BaseCommand } from "./BaseCommand";
+import { BaseApplicationCommand } from "./BaseApplicationCommand";
 
 /**
  * @since v1.0
  */
-export abstract class SlashCommand extends BaseCommand<ChatInputCommandInteraction, SlashCommandBuilder|Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">|SlashCommandSubcommandsOnlyBuilder> {
+export abstract class SlashCommand extends BaseApplicationCommand<ChatInputCommandInteraction, SlashCommandBuilder> {
     private subcommands: SlashCommand.Subcommand[] = Array.of();
     private subcommandGroups: SlashCommand.SubcommandGroup[] = Array.of();
 
@@ -82,7 +80,7 @@ export abstract class SlashCommand extends BaseCommand<ChatInputCommandInteracti
 }
 
 export namespace SlashCommand {
-    export abstract class Subcommand extends AppCommand<ChatInputCommandInteraction, SlashCommandSubcommandBuilder> {
+    export abstract class Subcommand extends BaseApplicationCommand<ChatInputCommandInteraction, SlashCommandSubcommandBuilder> {
         public parent: SlashCommand|null = null;
 
         /**
@@ -107,7 +105,7 @@ export namespace SlashCommand {
             return subcommands.filter(c => c.name === this.getCommandData().name)[0]||null;
         }
     }
-    export class SubcommandGroup extends AppCommand<ChatInputCommandInteraction, SlashCommandSubcommandGroupBuilder> {
+    export class SubcommandGroup extends BaseApplicationCommand<ChatInputCommandInteraction, SlashCommandSubcommandGroupBuilder> {
         private subcommands: Subcommand[];
 
         private constructor(data: SlashCommandSubcommandGroupBuilder, subcommands: Subcommand[]) {
