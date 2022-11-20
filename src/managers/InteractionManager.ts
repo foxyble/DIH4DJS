@@ -305,18 +305,20 @@ export class InteractionManager {
      */
     public handleSlashCommand(interaction: ChatInputCommandInteraction) {
         var slashcommand = this.slashCommandIndex.get(interaction.commandName)!;
-        var subcommand = this.subcommandIndex.get(interaction.commandName)!;
+        var subcommand = this.subcommandIndex.get(CommandUtils.buildCommandPath(interaction.commandName, interaction.options.getSubcommand(false)!));
         if(slashcommand === null && subcommand === null
                 || slashcommand === undefined && subcommand === undefined) {
-            throw new Error("Slash command %s is not registered.".replace("%s", interaction.commandName));
+            DIH4DJSLogger.warn(`Couldn't find slashcommand ${interaction.commandName}.`, DIH4DJSLogger.Type.SlashCommandNotFound);
         } else {
-            if(slashcommand === null) {
-                var base = subcommand.getParent()!;
-                if(this.passesRequirements(interaction, base) && this.passesRequirements(interaction, subcommand)) {
-                    subcommand?.execute(this.dih4djs.client, interaction);
-                }
-            } else if(this.passesRequirements(interaction, slashcommand)) {
-                slashcommand.execute(this.dih4djs.client, interaction);
+            if(subcommand === undefined) {
+                DIH4DJSLogger.warn(`Could not find subcommand ${interaction.options.getSubcommand(false)}`, DIH4DJSLogger.Type.SlashCommandNotFound);
+            }
+            var base = subcommand?.getParent();
+            if(interaction.options.getSubcommand(false) !== null && this.passesRequirements(interaction, subcommand!) 
+                    && this.passesRequirements(interaction, base!)) {
+                return subcommand!.execute(this.dih4djs.client, interaction);
+            } else if (this.passesRequirements(interaction, slashcommand)) {
+                return slashcommand.execute(this.dih4djs.client, interaction);
             }
         }
     }
@@ -381,6 +383,9 @@ export class InteractionManager {
             } else {
                 command.applyCooldown(userId, (Date.now() + command.cooldown));
             }
+        }
+        if(interaction.isChatInputCommand()) {
+            console.log(interaction.options.getSubcommand(false));
         }
         return true;
     }
