@@ -31,8 +31,7 @@ export class DIH4DJSLogger {
     
     private static async log0(msg: any, type: DIH4DJSLogger.Type, level: LoggerLevel) {
         if(this.blockedLogTypes.includes(type)) return;
-        var format: string = `(%date) [%lvl]: ${msg}`
-            .replace("%date%", chalk`{yellow ${new Date(Date.now()).toUTCString()}}`);
+        var format: string = `(%date) [%lvl]: ${msg}`.replace("%date", chalk`{yellow ${new Date(Date.now()).toUTCString()}}`);
         switch(level) {
             case LoggerLevel.DEBUG:
                 this.log(format.replace("%lvl", chalk.blueBright(level)));
@@ -83,8 +82,10 @@ export namespace DIH4DJSLogger {
         CommandQueued,
         SlashCommandRegistered,
         SlashCommandSkipped,
+        SlashCommandNotFound,
         ContextCommandRegistered,
         ContextCommandSkipped,
+        ContextCommandNotFound,
         SmartQueue,
         SmartQueueIgnored,
         SmartQueueDeleteUnknown,
