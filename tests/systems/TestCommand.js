@@ -1,7 +1,7 @@
 'use strict';
 
 const { ChatInputCommandInteraction, Client } = require("discord.js");
-const { Commands, SlashCommand } = require("../../source");
+const { Commands, SlashCommand } = require("../../src");
 
 class TestCommand extends SlashCommand {
     constructor() {

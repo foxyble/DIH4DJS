@@ -1,7 +1,7 @@
 'use strict';
 
 const { Client, MessageContextMenuCommandInteraction } = require("discord.js");
-const { ContextCommand, Commands } = require("../../source");
+const { ContextCommand, Commands } = require("../../src");
 
 class TestContextCommand extends ContextCommand.Message {
     constructor() {

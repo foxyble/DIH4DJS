@@ -19,23 +19,23 @@ class DIH4DJSLogger {
     }
 
     static info(msg, type) {
-        this.log0(msg, (type ? type : DIH4DJSLogger.Type.Info), LoggerLevel.Info);
+        this.log(msg, (type ? type : DIH4DJSLogger.Type.Info), DIH4DJSLogger.Level.Info);
     }
 
     static warn(msg, type) {
-        this.log0(msg, (type ? type : DIH4DJSLogger.Type.Warn), LoggerLevel.Warn);
+        this.log(msg, (type ? type : DIH4DJSLogger.Type.Warn), DIH4DJSLogger.Level.Warn);
     }
 
     static error(msg, type) {
-        this.log0(msg, (type ? type : DIH4DJSLogger.Type.Error), LoggerLevel.Error);
+        this.log(msg, (type ? type : DIH4DJSLogger.Type.Error), DIH4DJSLogger.Level.Error);
     }
 
     static debug(msg, type) {
-        this.log0(msg, (type ? type : DIH4DJSLogger.Type.Debug), LoggerLevel.Debug);
+        this.log(msg, (type ? type : DIH4DJSLogger.Type.Debug), DIH4DJSLogger.Level.Debug);
     }
 
     static trace(msg, type) {
-        this.log0(msg, (type ? type : DIH4DJSLogger.Type.Trace), LoggerLevel.Trace);
+        this.log(msg, (type ? type : DIH4DJSLogger.Type.Trace), DIH4DJSLogger.Level.Trace);
     }
 }
 
