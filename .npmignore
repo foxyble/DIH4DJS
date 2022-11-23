@@ -1,5 +1,13 @@
+# packages
+node_modules/
+package-lock.json
 
-# TernJS port file
-.tern-port
-# Unbuilt package
-src/
+# Tests
+tests/
+
+# Github
+.github
+.gitignore
+
+# Env
+.env
