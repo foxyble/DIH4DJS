@@ -23,3 +23,6 @@ exports.ComponentIdBuilder = require("./utils/ComponentIdBuilder");
 exports.Options = require('./utils/Options');
 exports.Pair = require("./utils/Pair");
 exports.RegistrationType = require('./utils/RegistrationType');
+
+// Misc
+exports.DIHError = require("./errors/DIHError");

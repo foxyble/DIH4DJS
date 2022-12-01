@@ -26,8 +26,8 @@ class DIH4DJSLogger {
         this.log(msg, (type ? type : DIH4DJSLogger.Type.Warn), DIH4DJSLogger.Level.Warn);
     }
 
-    static error(msg, type) {
-        this.log(msg, (type ? type : DIH4DJSLogger.Type.Error), DIH4DJSLogger.Level.Error);
+    static error(msg) {
+        throw new DIHError(msg);
     }
 
     static debug(msg, type) {
@@ -63,6 +63,7 @@ module.exports = DIH4DJSLogger;
         Type[Type["ButtonNotFound"] = 16] = "ButtonNotFound";
         Type[Type["SelectMenuNotFound"] = 17] = "SelectMenuNotFound";
         Type[Type["ModalNotFound"] = 18] = "ModalNotFound";
+        Type[Type["ActionRegistered"] = 19] = "ActionRegistered";
     })(Type = DIH4DJSLogger.Type || (DIH4DJSLogger.Type = {}));
     let Level;
     (function (Level) {

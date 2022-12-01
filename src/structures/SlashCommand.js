@@ -6,6 +6,7 @@ const BaseApplicationCommand = require("./BaseApplicationCommand");
 /**
  * Represents a slashcommand.
  * @since v1.2
+ * @abstract
  */
 class SlashCommand extends BaseApplicationCommand {
     subcommands = Array.of();
@@ -52,6 +53,7 @@ module.exports = SlashCommand;
      * Represents a subcommand for a parent
      * slashcommand.
      * @since v1.2
+     * @abstract
      */
     class SubCommand extends BaseApplicationCommand {
         _parent = null;
@@ -84,6 +86,7 @@ module.exports = SlashCommand;
     /**
      * Represents a slashcommand subcommand group.
      * @since v1.2
+     * @abstract
      */
     class SubcommandGroup extends BaseApplicationCommand {
         subcommands = Array.of();

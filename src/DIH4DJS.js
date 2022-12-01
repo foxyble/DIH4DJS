@@ -83,14 +83,14 @@ class DIH4DJS {
             try {
                 const al = new Listener();
                 if (!al instanceof ActionListener) return;
-                DIH4DJSLogger.info(`Listening for the @${al.eventName} event.`);
+                DIH4DJSLogger.info(`Listening for the @${al.eventName} event.`, DIH4DJSLogger.Type.ActionRegistered);
                 if (al.eventName === Events.ClientReady) {
                     this.client.once(al.eventName, al.execute.bind(al, this));
                 } else {
                     this.client.on(al.eventName, al.execute.bind(al, this));
                 }
             } catch (err) {
-                DIH4DJSLogger.warn("Failed to load an action listener.");
+                DIH4DJSLogger.warn("Failed to load an action listener.", DIH4DJSLogger.Type.ActionRegistered);
             }
         }
     }
