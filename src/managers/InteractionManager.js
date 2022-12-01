@@ -21,6 +21,7 @@ const {
     ApplicationCommandType,
     ChatInputCommandInteraction
 } = require("discord.js");
+const ms = require("ms");
 
 class InteractionManager {
     static RETRIVED_COMMANDS = new Collection();
@@ -291,7 +292,7 @@ class InteractionManager {
             this.userContextIndex.set(data.name, command);
         }
         else {
-            DIH4DJSLogger.error("Invalid command type %t for Context Command! It will be ignored.".replace("%t", data.type));
+            DIH4DJSLogger.error(`Invalid command type ${data.type} for Context Command! It will be ignored.`);
             return null;
         }
         DIH4DJSLogger.info(`Registered context command: ${data.name} (${command.registrationType})`, DIH4DJSLogger.Type.ContextCommandRegistered);
@@ -305,22 +306,17 @@ class InteractionManager {
      */
     handleSlashCommand(interaction) {
         var slashcommand = this.slashCommandIndex.get(interaction.commandName);
-        var subcommand = this.subcommandIndex.get(CommandUtils.buildCommandPath(interaction.commandName, interaction.options.getSubcommand(false)));
-        console.log(slashcommand);
         if (slashcommand === null || slashcommand === undefined) {
             DIH4DJSLogger.warn(`Couldn't find slashcommand ${interaction.commandName}.`, DIH4DJSLogger.Type.SlashCommandNotFound);
         } else {
+            var subcommand = this.subcommandIndex.get(CommandUtils.buildCommandPath(interaction.commandName, interaction.options.getSubcommand(false)));
             if (this.passesRequirements(interaction, slashcommand)) {
                 return slashcommand.execute(this.dih4djs.client, interaction);
-            }
-            if (subcommand === null || subcommand === undefined) {
-                DIH4DJSLogger.warn(`Subcommand with the name ${interaction.options.getSubcommand(false)} could not be found.`);
-            } else {
-                var base = subcommand.parent;
+            } else if (subcommand !== null && subcommand !== undefined) {
                 if (interaction.options.getSubcommand(false) !== null && this.passesRequirements(interaction, subcommand)
-                    && this.passesRequirements(interaction, base)) {
+                    && this.passesRequirements(interaction, slashcommand)) {
                     return subcommand.execute(this.dih4djs.client, interaction);
-                }
+                };
             }
         }
     }
@@ -383,12 +379,15 @@ class InteractionManager {
         // Check if the command has enabled some sort of cooldown
         if (command.cooldown > 0) {
             if (command.hasCooldown(userId)) {
+                if (this.dih4djs.isCooldownNotification) {
+                    const c = ms(command.cooldown - (Date.now() - command.COOLDOWN_CACHE.get(userId).lastUse));
+                    interaction.reply({ content: `Try again in ${c}s`, ephemeral: true })
+                }
                 return false;
             } else {
                 command.applyCooldown(userId, (Date.now() + command.cooldown));
             }
         }
-        console.log("passed requirements");
         return true;
     }
 }

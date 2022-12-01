@@ -11,6 +11,7 @@ const RegistrationType = require('./RegistrationType');
  * interaction handlers will be held.
  * @property {string} [defaultRegistrationType] The default registration type
  * to fall back to if not specified for a command.
+ * @property {boolean} [cooldownNotification] Whether to respond when a cooldown is active.
  * @property {string} [testingServer] The testing/support guild for the bot.
  * @property {LoggerOptions} [logging={}] Different options for the logger e.g. whether it should be disabled
  * or block certain logger types.
@@ -47,6 +48,7 @@ class Options extends null {
             packages: ["./commands/", "./components/"],
             defaultRegistrationType: RegistrationType.Global,
             registerOnReady: true,
+            cooldownNotification: true,
             logging: {
                 enabled: true,
                 blockedTypes: []

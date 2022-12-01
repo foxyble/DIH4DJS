@@ -7,7 +7,6 @@ const fs = require("node:fs");
 const ActionListener = require("./structures/interfaces/ActionListener");
 const InteractionManager = require("./managers/InteractionManager");
 const ComponentManager = require("./managers/ComponentManager");
-const RegistrationType = require("./utils/RegistrationType");
 
 class DIH4DJS {
     static registrationType;
@@ -62,6 +61,10 @@ class DIH4DJS {
 
     get testingServer() {
         return this.options.testingServer;
+    }
+
+    get isCooldownNotification() {
+        return this.options.cooldownNotification;
     }
 
     static get defaultRegistrationType() {
