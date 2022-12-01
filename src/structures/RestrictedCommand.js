@@ -63,7 +63,7 @@ class RestrictedCommand extends ComponentHandler {
     retrieveCooldown(userId) {
         const cooldown = this.COOLDOWN_CACHE.get(userId);
         if (cooldown === null || cooldown === undefined) {
-            return new RestrictedCommand.Cooldown(Date.now(), Date.now());
+            return new RestrictedCommand.Cooldown(0, 0);
         }
         return cooldown;
     }
@@ -75,9 +75,13 @@ class RestrictedCommand extends ComponentHandler {
      */
     hasCooldown(userId) {
         const cooldown = this.retrieveCooldown(userId);
-        return cooldown.lastUse <= cooldown.nextUse;
+        return this.cooldown - (Date.now() - cooldown.lastUse) > 0;
     }
 
+    /**
+     * Creates the default command options
+     * @returns {CommandOptions}
+     */
     static createDefault() {
         return {
             registrationType: DIH4DJS.defaultRegistrationType,
