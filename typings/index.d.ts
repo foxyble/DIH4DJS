@@ -1,4 +1,3 @@
-
 import { 
     ApplicationCommand,
     ApplicationCommandOptionType,
@@ -23,6 +22,7 @@ import {
 export type DIHOptions = {
     packages?: string|string[];
     defaultRegistrationType?: RegistrationType;
+    cooldownNotification: boolean;
     testingServer?: string;
     logging?: LoggerOptions;
     registerOnReady?: boolean;
@@ -30,7 +30,7 @@ export type DIHOptions = {
 export type LoggerOptions = {enabled?: boolean;blockedTypes?: DIH4DJSLogger.Type[];}
 
 export class Options extends null {
-    public static validateOptions(options: DIHOptions);
+    public static validateOptions(options: DIHOptions): DIHOptions;
     private static createDefault(): DIHOptions;
 }
 
@@ -50,6 +50,7 @@ export class DIH4DJS {
     public get packages(): string[];
     public get isRegisterOnReady(): boolean;
     public get testingServer(): string[];
+    public get isCooldownNotification(): boolean;
 
     public static get defaultRegistrationType(): RegistrationType;
     public static set defaultRegistrationType(type: RegistrationType);
@@ -64,7 +65,7 @@ export class DIH4DJSLogger {
 
     public static info(msg: any, type?: DIH4DJSLogger.Type): void;
     public static warn(msg: any, type?: DIH4DJSLogger.Type): void;
-    public static error(msg: any, type?: DIH4DJSLogger.Type): void;
+    public static error(msg: any): void;
     public static debug(msg: any, type?: DIH4DJSLogger.Type): void;
     public static trace(msg: any, type?: DIH4DJSLogger.Type): void;
 }
@@ -221,6 +222,10 @@ export class SmartQueue {
     public checkGuild(existing: ApplicationCommand[], guild: Guild): Pair<SlashCommand[], ContextCommand<any>[]>;
     private rmeoveDuplicates(existing: ApplicationCommand[], guild?: Guild): Pair<SlashCommand[], ContextCommand<any>[]>;
 }
+
+export class DIHError extends Error {
+    constructor(message: string);
+}
 // #endregion
 
 //#region Namespaces
@@ -270,7 +275,8 @@ export namespace DIH4DJSLogger {
         SmartQueueIgnoreUnknown,
         ButtonNotFound,
         SelectMenuNotFound,
-        ModalNotFound
+        ModalNotFound,
+        ActionRegistered
     }
     export enum Level {
         Info = "INFO",
