@@ -29,20 +29,20 @@ class RestrictedCommand extends ComponentHandler {
             ...options
         }
         super(validOptions.components);
-        this.options = validOptions;
+        this.cmdOptions = validOptions;
     }
 
-    get registrationType() { return this.options.registrationType; }
+    get registrationType() { return this.cmdOptions.registrationType; }
 
-    get requiredGuilds() { return this.options.requiredGuilds; }
+    get requiredGuilds() { return this.cmdOptions.requiredGuilds; }
 
-    get requiredUsers() { return this.options.requiredUsers; }
+    get requiredUsers() { return this.cmdOptions.requiredUsers; }
 
-    get requiredRoles() { return this.options.requiredRoles; }
+    get requiredRoles() { return this.cmdOptions.requiredRoles; }
 
-    get permissions() { return this.options.permissions; }
+    get permissions() { return this.cmdOptions.permissions; }
 
-    get cooldown() { return this.options.cooldown; }
+    get cooldown() { return this.cmdOptions.cooldown; }
 
     /**
      * Manually applys a cooldown for the specified user id.
@@ -88,11 +88,8 @@ class RestrictedCommand extends ComponentHandler {
             requiredGuilds: [],
             requiredRoles: [],
             requiredUsers: [],
-            components: {
-                handledButtonIds: [],
-                handledModalIds: [],
-                handledSelectMenuIds: []
-            }
+            permissions: [],
+            components: {}
         }
     }
 }

@@ -53,8 +53,7 @@ class InteractionManager {
      */
     registerInteractions() {
         const data = new Pair(this.getSlashCommands(), this.getContextCommands());
-        if (!this.dih4djs.client.token && !this.dih4djs.client.application)
-            return;
+        if (!this.dih4djs.client.token && !this.dih4djs.client.application) return;
         const token = this.dih4djs.client.token;
         const appId = this.dih4djs.client.application.id;
         const rest = new REST({ version: '10' }).setToken(token);
@@ -192,7 +191,7 @@ class InteractionManager {
                 .forEach((g) => commandData.addSubcommandGroup(g));
         }
         if (command.subcommands !== null && command.subcommands.length !== 0) {
-            this.getSubcommandData(command, command.getSubcommands())
+            this.getSubcommandData(command, command.subcommands)
                 .forEach((s) => commandData.addSubcommand(s));
         }
         this.slashCommandIndex.set(CommandUtils.buildCommandPath(commandData.name), command);
@@ -243,10 +242,10 @@ class InteractionManager {
                 }
                 var commandPath;
                 if (subGroupName === null || subGroupName === undefined) {
-                    commandPath = CommandUtils.buildCommandPath(command.getCommandData().name, subcommand.getCommandData().name);
+                    commandPath = CommandUtils.buildCommandPath(command.data.name, subcommand.data.name);
                 }
                 else {
-                    commandPath = CommandUtils.buildCommandPath(command.getCommandData().name, subGroupName, subcommand.getCommandData().name);
+                    commandPath = CommandUtils.buildCommandPath(command.data.name, subGroupName, subcommand.data.name);
                 }
                 this.subcommandIndex.set(commandPath, subcommand);
                 DIH4DJSLogger.info(`Registered command: /${commandPath} (${command.registrationType})`, DIH4DJSLogger.Type.SlashCommandRegistered);
@@ -305,18 +304,22 @@ class InteractionManager {
      * @since v1.0
      */
     handleSlashCommand(interaction) {
-        var slashcommand = this.slashCommandIndex.get(interaction.commandName);
-        if (slashcommand === null || slashcommand === undefined) {
-            DIH4DJSLogger.warn(`Couldn't find slashcommand ${interaction.commandName}.`, DIH4DJSLogger.Type.SlashCommandNotFound);
+        const slashcommand = this.slashCommandIndex.get(interaction.commandName);
+        const groupName = interaction.options.getSubcommandGroup(false);
+        const subName = interaction.options.getSubcommand(false);
+        var subc = CommandUtils.buildCommandPath(interaction.commandName, groupName ? CommandUtils.buildCommandPath(groupName, subName) : subName);
+        const subcommand = this.subcommandIndex.get(subc);
+        if (slashcommand === null && subcommand === null) {
+            throw new DIHError(`Slash Command ${interaction.commandName} is not registered.`);
         } else {
-            var subcommand = this.subcommandIndex.get(CommandUtils.buildCommandPath(interaction.commandName, interaction.options.getSubcommand(false)));
-            if (this.passesRequirements(interaction, slashcommand)) {
-                return slashcommand.execute(this.dih4djs.client, interaction);
-            } else if (subcommand !== null && subcommand !== undefined) {
-                if (interaction.options.getSubcommand(false) !== null && this.passesRequirements(interaction, subcommand)
-                    && this.passesRequirements(interaction, slashcommand)) {
-                    return subcommand.execute(this.dih4djs.client, interaction);
-                };
+            if (subcommand) {
+                const base = subcommand.parent;
+                if (base !== null) {
+                    if (this.passesRequirements(interaction, base) && this.passesRequirements(interaction, subcommand))
+                        subcommand.execute(this.dih4djs.client, interaction);
+                }
+            } else if (this.passesRequirements(interaction, slashcommand)) {
+                slashcommand.execute(this.dih4djs.client, interaction);
             }
         }
     }
