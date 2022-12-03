@@ -4,19 +4,22 @@ import {
     ApplicationCommandOptionType,
     BaseInteraction,
     ButtonInteraction,
+    ChannelSelectMenuInteraction,
     ChatInputCommandInteraction,
     Client,
     Collection,
     ContextMenuCommandBuilder,
     ContextMenuCommandType,
     Guild,
+    MentionableSelectMenuInteraction,
     MessageContextMenuCommandInteraction,
     ModalSubmitInteraction,
-    SelectMenuInteraction,
     SlashCommandBuilder,
     SlashCommandSubcommandBuilder,
     SlashCommandSubcommandGroupBuilder,
-    UserContextMenuCommandInteraction
+    StringSelectMenuInteraction,
+    UserContextMenuCommandInteraction,
+    UserSelectMenuInteraction
 } from 'discord.js';
 
 //#region Classes
@@ -182,7 +185,12 @@ export class ComponentManager {
     public putComponentHandlers(handler: ComponentHandler): void;
 
     public handleButton(buttonInteraction: ButtonInteraction): void;
-    public handleSelectMenu(selectMenuInteraction: AnySelectMenuInteraction): void;
+    
+    public handleStringSelect(interaction: StringSelectMenuInteraction): void;
+    public handleUserSelect(interaction: UserSelectMenuInteraction): void;
+    public handleChannelSelect(interaction: ChannelSelectMenuInteraction): void;
+    public handleMentionableSelect(interaction: MentionableSelectMenuInteraction): void;
+
     public handleModal(modalInteraction: ModalSubmitInteraction): void;
 }
 
