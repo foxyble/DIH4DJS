@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const { IntentsBitField, Client } = require("discord.js");
-const { DIH4DJS, RegistrationType } = require("../src");
+const { DIH4DJS } = require("../src");
 
 const IntentFlags = IntentsBitField.Flags;
 const client = new Client({
@@ -15,7 +15,7 @@ const client = new Client({
 });
 
 const dih4djs = new DIH4DJS(client, {
-    packages: ["./systems/"]
+    packages: ["./commands/"]
 });
 
 client.login(process.env.TOKEN);
