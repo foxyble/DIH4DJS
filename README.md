@@ -1,7 +1,11 @@
 <!-- PROJECT SHIELDS -->
+<div style="text-align:center;">
+
 ![Version][version-shield]
+[![Discord][discord-shield]][discord-url]
 [![License][license-shield]][license-url]
 
+</div>
 
 <img src="https://github.com/OoP1nk/OoP1nk/blob/main/assets/dih4djs.png?raw=true" />
 
@@ -17,6 +21,9 @@ npm install dih4djs
 yarn add dih4djs
 pnpm add dih4djs
 ```
+
+If you need help, don't hesitate to join our [discord server][discord-url] to ask your questions or make suggestions.
+
 # Setup/Configuration
 For a more indepth description on how to register commands feel free to look at the [Wiki](https://github.com/OoP1nk/DIH4DJS/wiki).
 
@@ -67,6 +74,8 @@ When contributing please follow the steps provided: [CONTRIBUTING](https://githu
 
 
 <!-- LINK & IMAGES -->
+[discord-shield]: https://img.shields.io/discord/1044203446473064488?color=%23406da2&label=Discord&style=for-the-badge
+[discord-url]: https://discord.gg/4nsHqQzEwa
 [license-shield]: https://img.shields.io/npm/l/dih4djs?color=%23406da2&style=for-the-badge
 [license-url]: https://github.com/OoP1nk/DIH4DJS/blob/release/LICENSE
 [version-shield]: https://img.shields.io/npm/v/dih4djs/latest?color=%23406da2&label=DIH4DJS&style=for-the-badge
