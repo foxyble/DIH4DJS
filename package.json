@@ -1,6 +1,6 @@
 {
   "name": "dih4djs",
-  "version": "1.2.0-dev.4d1f3290-d447-4198-84b8-da757e41401f",
+  "version": "1.2.0-dev.1261ff2a-9f45-4e14-90d4-a60019766573",
   "description": "interaction handler for the discord.js library",
   "scripts": {
     "test": "node --trace-warnings ./tests/index.test.js"
