@@ -12,6 +12,7 @@ import {
     ContextMenuCommandType,
     Guild,
     MentionableSelectMenuInteraction,
+    MessageComponentInteraction,
     MessageContextMenuCommandInteraction,
     ModalSubmitInteraction,
     SlashCommandBuilder,
@@ -26,7 +27,7 @@ import {
 export type DIHOptions = {
     packages?: string|string[];
     defaultRegistrationType?: RegistrationType;
-    cooldownNotification: boolean;
+    cooldownNotification?: boolean;
     testingServer?: string;
     logging?: LoggerOptions;
     registerOnReady?: boolean;
@@ -94,7 +95,10 @@ export abstract class ComponentHandler {
     public handleButton(interaction: ButtonInteraction): void;
 
     public get handledSelectMenus(): string[];
-    public handleSelectMenu(interaction: SelectMenuInteraction): void;
+    public handleStringSelect(interaction: StringSelectMenuInteraction): void;
+    public handleUserSelect(interaction: UserSelectMenuInteraction): void;
+    public handleChannelSelect(interaction: ChannelSelectMenuInteraction): void;
+    public handleMentionableSelect(interaction: MentionableSelectMenuInteraction): void;
 
     public get handledModals(): string[];
     public handleModal(interaction: ModalSubmitInteraction): void;
@@ -186,10 +190,7 @@ export class ComponentManager {
 
     public handleButton(buttonInteraction: ButtonInteraction): void;
     
-    public handleStringSelect(interaction: StringSelectMenuInteraction): void;
-    public handleUserSelect(interaction: UserSelectMenuInteraction): void;
-    public handleChannelSelect(interaction: ChannelSelectMenuInteraction): void;
-    public handleMentionableSelect(interaction: MentionableSelectMenuInteraction): void;
+    public handleSelectMenu(interaction: MessageComponentInteraction): void;
 
     public handleModal(modalInteraction: ModalSubmitInteraction): void;
 }
