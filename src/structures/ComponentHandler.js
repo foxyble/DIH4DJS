@@ -44,7 +44,10 @@ class ComponentHandler {
      * Method that runs if a select menu id is handled.
      * @param interaction The interaction to handle.
      */
-    handleSelectMenu(interaction) { }
+    handleStringSelect(interaction) { }
+    handleUserSelect(interaction) { }
+    handleChannelSelect(interaction) { }
+    handleMentionableSelect(interaction) { }
 
     /**
      * @returns A list of handled modal ids.

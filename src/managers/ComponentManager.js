@@ -1,4 +1,4 @@
-const { Collection, ModalSubmitInteraction, SelectMenuInteraction, ButtonInteraction } = require("discord.js");
+const { Collection, ModalSubmitInteraction, ButtonInteraction, AnySele, BaseInteraction, MessageComponentInteraction } = require("discord.js");
 const DIH4DJSLogger = require("../DIH4DJSLogger");
 const ComponentHandler = require("../structures/ComponentHandler");
 const ComponentIdBuilder = require("../utils/ComponentIdBuilder");
@@ -25,25 +25,29 @@ class ComponentManager {
      * @param {ButtonInteraction} buttonInteraction 
      * @returns 
      */
-    handledButton(buttonInteraction) {
-        const button = this.buttonHandlers.get(ComponentIdBuilder.split(buttonInteraction.customId)[0]);
+    handleButton(buttonInteraction) {
+        const id = ComponentIdBuilder.split(buttonInteraction.customId)[0];
+        const button = this.buttonHandlers.get(id);
         if (button !== null && button !== undefined) {
             button.handleButton(buttonInteraction);
         } else {
-            DIH4DJSLogger.warn(`Button with the id ${buttonInteraction.customId} could not be found.`, DIH4DJSLogger.Type.ButtonNotFound)
+            DIH4DJSLogger.warn(`Button with the id ${id} could not be found.`, DIH4DJSLogger.Type.ButtonNotFound)
         }
     }
 
     /**
      * Handle all {@link selectMenuInteraction}s.
-     * @param {SelectMenuInteraction} selectMenuInteraction 
+     * @param {MessageComponentInteraction} interaction 
      */
-    handleSelectMenu(selectMenuInteraction) {
-        const selectMenu = this.selectMenuHandlers.get(ComponentIdBuilder.split(selectMenuInteraction.customId)[0]);
-        if (selectMenu !== null && selectMenu !== undefined) {
-            selectMenu.handleSelectMenu(selectMenuInteraction);
+    handleSelectMenu(interaction) {
+        const selectMenu = this.selectMenuHandlers.get(ComponentIdBuilder.split(interaction.customId)[0]);
+        if (!selectMenu || selectMenu === null) {
+            DIH4DJSLogger.warn(`SelectMenu with the id ${interaction.customId} could not be found.`, DIH4DJSLogger.Type.SelectMenuNotFound)
         } else {
-            DIH4DJSLogger.warn(`SelectMenu with the id ${selectMenuInteraction.customId} could not be found.`, DIH4DJSLogger.Type.SelectMenuNotFound)
+            if (interaction.isStringSelectMenu()) selectMenu.handleStringSelect(interaction);
+            if (interaction.isUserSelectMenu()) selectMenu.handleUserSelect(interaction);
+            if (interaction.isChannelSelectMenu()) selectMenu.handleChannelSelect(interaction);
+            if (interaction.isMentionableSelectMenu()) selectMenu.handleMentionableSelect(interaction);
         }
     }
 
