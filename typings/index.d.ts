@@ -1,4 +1,5 @@
 import { 
+    AnySelectMenuInteraction,
     ApplicationCommand,
     ApplicationCommandOptionType,
     BaseInteraction,
@@ -181,7 +182,7 @@ export class ComponentManager {
     public putComponentHandlers(handler: ComponentHandler): void;
 
     public handleButton(buttonInteraction: ButtonInteraction): void;
-    public handleSelectMenu(selectMenuInteraction: SelectMenuInteraction): void;
+    public handleSelectMenu(selectMenuInteraction: AnySelectMenuInteraction): void;
     public handleModal(modalInteraction: ModalSubmitInteraction): void;
 }
 
