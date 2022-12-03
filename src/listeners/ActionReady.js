@@ -13,12 +13,10 @@ class ActionReady extends ActionListener {
      * @param {DIH4DJS} dih4djs 
      */
     async execute(dih4djs) {
-        setTimeout(() => {
-            if (dih4djs === null || dih4djs === undefined) return;
-            if (dih4djs.isRegisterOnReady && dih4djs.interactionManager !== null) {
-                dih4djs.registerInteractions();
-            }
-        }, 30000);
+        if (dih4djs === null || dih4djs === undefined) return;
+        if (dih4djs.isRegisterOnReady && dih4djs.interactionManager !== null) {
+            dih4djs.registerInteractions();
+        }
     }
 }
 
