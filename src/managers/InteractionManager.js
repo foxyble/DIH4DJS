@@ -61,7 +61,7 @@ class InteractionManager {
             const existing = guild.commands.cache;
             var guildData;
             if (guild.id === this.dih4djs.testingServer)
-                guildData = CommandUtils.filterByType(data, RegistrationType.Private);
+                guildData = CommandUtils.filterByType(data, RegistrationType.Testing);
             else
                 guildData = CommandUtils.filterByType(data, RegistrationType.Guild);
             existing.forEach((e) => this.cacheCommand(e));
@@ -92,10 +92,10 @@ class InteractionManager {
         const appId = this.dih4djs.client.application.id;
         const rest = new REST({ version: '10' }).setToken(token);
         var commands = Array.of();
-        slashCommands.map(c => commands.push(c.getCommandData().toJSON()));
-        contextCommands.map(c => commands.push(c.getCommandData().toJSON()));
+        slashCommands.map(c => commands.push(c.data.toJSON()));
+        contextCommands.map(c => commands.push(c.data.toJSON()));
         await rest.put(Routes.applicationGuildCommands(appId, guild.id), { body: commands })
-            .catch((reason) => DIH4DJSLogger_1.DIH4DJSLogger.warn(reason));
+            .catch((reason) => DIH4DJSLogger.warn(reason));
     }
 
     /**
@@ -137,14 +137,14 @@ class InteractionManager {
      * @param pkg The directory where the commands are.
      */
     async registerCommandsAndOrComponenets(pkg) {
-        const basePath = path.join((0, getRootPath)(), pkg);
+        const basePath = path.join(getRootPath(), pkg);
         const files = await fs.readdir(basePath);
         for (const file of files) {
             const filePath = path.join(basePath, file);
             const stat = await fs.lstat(filePath);
             if (stat.isDirectory()) this.registerCommandsAndOrComponenets(path.join(pkg, file));
             if (file.endsWith('.js') || file.endsWith('.ts')) {
-                const Command = require(filePath);
+                const { default: Command } = require(filePath);
                 const commandOrHandler = new Command();
                 if (commandOrHandler instanceof SlashCommand) {
                     this.slashCommands.push(commandOrHandler);
