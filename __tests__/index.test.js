@@ -24,3 +24,5 @@ const dih4djs = new DIH4DJS(client, {
 });
 
 client.login(process.env.TOKEN);
+
+client.destory();
