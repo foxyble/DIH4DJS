@@ -17,5 +17,3 @@ const client = new Client({
 const dih4djs = new DIH4DJS(client, {
     packages: ["./commands/"]
 });
-
-client.login(process.env.TOKEN);
