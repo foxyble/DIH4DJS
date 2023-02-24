@@ -144,7 +144,7 @@ class InteractionManager {
             const stat = await fs.lstat(filePath);
             if (stat.isDirectory()) this.registerCommandsAndOrComponenets(path.join(pkg, file));
             if (file.endsWith('.js') || file.endsWith('.ts')) {
-                const { default: Command } = require(filePath);
+                const { default: Command } = await import('file://' + filePath);
                 const commandOrHandler = new Command();
                 if (commandOrHandler instanceof SlashCommand) {
                     this.slashCommands.push(commandOrHandler);
