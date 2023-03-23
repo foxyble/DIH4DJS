@@ -28,8 +28,7 @@
   },
   "homepage": "https://github.com/OoP1nk/DIH4DJS#readme",
   "dependencies": {
-    "chalk": "^4.1.2",
-    "discord.js": "^14.6.0"
+    "discord.js": "^14.8.0"
   },
   "devDependencies": {
     "dotenv": "^16.0.3",
