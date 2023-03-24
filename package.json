@@ -3,8 +3,7 @@
   "version": "1.0.7",
   "description": "interaction handler for the discord.js library",
   "scripts": {
-    "test": "node ./__tests__/index.test.js",
-    "build": "rimraf ./source && tsc"
+    "test": "node ./__tests__/index.test.js"
   },
   "main": "./source/index.js",
   "repository": {
