@@ -7,7 +7,7 @@
   "main": "./lib/index.js",
   "typings": "./typings/index.d.ts",
   "scripts": {
-    "test": "node tests/index.test.js"
+    "test": "node test/index.test.js"
   },
   "homepage": "https://github.com/OoP1nk/DIH4DJS#readme",
   "repository": {

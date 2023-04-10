@@ -1,6 +1,5 @@
-require('dotenv').config();
-
 const { DIH4DJS } = require('../lib');
+const { token } = require('./auth.json');
 const {Client,GatewayIntentBits} = require('discord.js');
 
 const client = new Client({
@@ -17,10 +16,11 @@ const dih4djs = new DIH4DJS({
 
 client.on('ready', () => {
     console.log('Ready!');
+    console.log(dih4djs.clients)
     setTimeout(() => {
         console.log('died :)');
         client.destroy();
     }, 5_000);
 });
 
-client.login(process.env.TOKEN).catch(console.error);
+client.login(token).catch(console.error);
