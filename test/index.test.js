@@ -1,8 +1,6 @@
-const { DIH4DJS } = require('../lib');
-const { token } = require('./auth.json');
-const {Client,GatewayIntentBits} = require('discord.js');
-
-const TestContextCommand = require('./systems/TestContextCommand');
+const { DIH4DJS, ClientStrategy } = require('../');
+const auth = require('./auth.json');
+const {Client,GatewayIntentBits, Events} = require('discord.js');
 
 const client = new Client({
     intents: [
@@ -12,15 +10,18 @@ const client = new Client({
     ]
 });
 
-const dih4djs = new DIH4DJS('wgawg');
-dih4djs.bind(client);
+const dih4djs = new DIH4DJS({
+    strategy: ClientStrategy.build(client, auth.token),
+    packages: ['./systems/']
+});
 
 client.on('ready', () => {
     console.log('Ready!');
+    console.log(client.listeners(Events.InteractionCreate))
     setTimeout(() => {
         console.log('died :)');
         client.destroy();
     }, 5_000);
 });
 
-client.login(token).catch(console.error);
+client.login(auth.token).catch(console.error);
