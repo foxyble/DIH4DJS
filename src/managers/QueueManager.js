@@ -15,6 +15,8 @@
 'use strict';
 
 const DIH4DJS = require('../DIH4DJS');
+const ContextCommand = require('../structures/ContextCommand');
+const SlashCommand = require('../structures/SlashCommand');
 const Pair = require("../util/Pair");
 const {
     Routes,
@@ -28,11 +30,6 @@ const {
  * @since v3.0.0
  */
 class QueueManager {
-
-    paused = false;
-
-    /** @type {Set<ApplicationCommand>} */
-    items = new Set();
 
     /**
      * Constructs a new QueueManager interface.
@@ -55,67 +52,31 @@ class QueueManager {
     }
 
     /**
+     * Upsert commands to discord API.
+     * @param {SlashCommand[]} slashcommands 
+     * @param {ContextCommand[]} contextcommands 
+     * @param {Guild} guild 
+     */
+    async upsert(slashcommands, contextcommands, guild = null) {
+        const global = (guild === null);
+        const route = (global ? Routes.applicationCommands(this.dih4djs.clientId) : Routes.applicationGuildCommands(this.dih4djs.clientId, guild.id));
+        return await this.rest.put(route, 
+            { body: [...slashcommands.map(c => c.data.toJSON()).concat(...contextcommands.map(c => c.data.toJSON()))] }
+        );
+    }
+
+    /**
      * Fetches the bot user.
      */
-    fetchBotUser() {
-        return this.rest.get(Routes.user());
+    async fetchBotUser() {
+        return await this.rest.get(Routes.user());
     }
 
     /**
-     * Starts the queue manager.
-     */
-    start() {
-
-    }
-
-    pause() { this.paused = true; }
-
-    /**
-     * Fetches all existing commands for a given application.
-     * @returns {Promise < Array < ApplicationCommand >>} The fetched list of commands.
+     * @returns {Promise<unknown>} List of existing commands (if error returns empty object)
      */
     async fetchCommands() {
         return await this.rest.get(Routes.applicationCommands(this.dih4djs.clientId));
-    }
-
-    /**
-     *
-     * @param {ApplicationCommand|Array<ApplicationCommand>} commands
-     */
-    async add(commands) {
-        const bulk = Array.isArray(commands);
-        const data = Array.of(commands);
-        if(!bulk) {
-
-        } else await this.rest.put(Routes.applicationCommands(this.dih4djs.clientId));
-    }
-
-    /**
-     *
-     */
-    put() {
-
-    }
-
-    delete(command) {
-
-    }
-
-    patch(command) {
-
-    }
-
-    /**
-     * @returns {Promise<unknown>|[]} List of existing commands (if error returns empty object)
-     */
-    fetchCommands() {
-        (async () => {
-            return await this.rest.get(Routes.applicationCommands(this.dih4djs))
-        })().catch((err) => {
-            console.error(err.message);
-            this.pause();
-            return [];
-        });
     }
 
     /**

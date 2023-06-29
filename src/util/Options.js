@@ -15,6 +15,7 @@
 'use strict';
 
 const ClientStrategy = require("../structures/ClientStrategy");
+const RegistrationType = require('./RegistrationType');
 
 /**
  * Main options for setting up DIH4DJS.
@@ -26,8 +27,16 @@ const ClientStrategy = require("../structures/ClientStrategy");
 /**
  * Options for all restricted commands.
  * @typedef {Object} CommandOptions
+ * @property {Number} [registrationType]
  * @property {Number} [cooldown] Whether the command has a cooldown.
- * @property {bigint[]} [permissions] Permissions to apply when registering command.
+ * @property {bigint[]|CommandPermissionOptions|bigint|number} [permissions] Permissions to apply when registering the command.
+ */
+
+/**
+ * Options for permissions
+ * @typedef {Object} CommandPermissionOptions
+ * @property {bigint|string|number} member Default member permissions (if any)
+ * @property {boolean} dm DM (Direct Messages) permission
  */
 
 class Options {
@@ -39,9 +48,19 @@ class Options {
     static createDefault(type) {
         switch(type) {
             case "dih4djs":
-                return { strategy: ClientStrategy.build(null, null), packages: ["commands/", "components/"] }
+                return {
+                    strategy: ClientStrategy.build(null, null),
+                    packages: ["commands/", "components/"]
+                }
             case "command":
-                return { cooldown: 1000, permissions: [] }
+                return {
+                    registrationType: RegistrationType.Global,
+                    cooldown: 0,
+                    permissions: {
+                        member: [0],
+                        dm: true
+                    }
+                }
             default:
                 throw new Error("Default type has not been defined.")
         }

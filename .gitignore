@@ -3,4 +3,4 @@ node_modules
 
 # Env
 .env
-test/auth.json
+/**/auth.json

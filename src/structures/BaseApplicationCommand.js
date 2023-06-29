@@ -24,6 +24,7 @@ const RestrictedCommand = require("./RestrictedCommand");
  * @since v3.0.0
  */
 class BaseApplicationCommand extends RestrictedCommand {
+
     /**
      * @param {T} data
      * @param {CommandOptions} options
@@ -40,6 +41,23 @@ class BaseApplicationCommand extends RestrictedCommand {
      * @public
      */
     setCommandData(newData) { this.data = newData; }
+
+    /**
+     * Returns an {@link ApplicationCommand} ready for publishing to the
+     * discord API.
+     * This combines all essential information to application commands
+     * ready to be published.
+     * Defaults to throw an error is method is not implemented correctly.
+     * 
+     * @example
+     * const { BaseApplicationCommand } = require('dih4djs')
+     * // Instance of BaseApplicationCommand!
+     * const command = new BaseApplicationCommand*()
+     * const builtCommand = command.build()
+     * ...
+     * @since v3.0.1
+     */
+    build() { throw new Error("Method not implemented correctly!") }
 
     execute(client, interaction) { };
 }

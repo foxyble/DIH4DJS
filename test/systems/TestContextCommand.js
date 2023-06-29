@@ -1,6 +1,6 @@
 'use strict';
 
-const {SlashCommand} = require("../../lib");
+const {SlashCommand} = require("../../src");
 const {ContextMenuCommandBuilder, ApplicationCommandType, SlashCommandBuilder} = require("discord.js");
 const TestSubCommand = require("./TestSubCommand");
 

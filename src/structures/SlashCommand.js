@@ -16,22 +16,37 @@
 
 const BaseApplicationCommand = require('./BaseApplicationCommand');
 
+
+/**
+ * Base class for a SlashCommand
+ * @since v3.0.0
+ */
 class SlashCommand extends BaseApplicationCommand {
     subcommands = Array.of();
     subcommandGroups = Array.of();
 
+    /**
+     * Add a set of subcommands.
+     * @param  {SlashCommand.Subcommand} commands
+     */
     addSubcommands(...commands) {
         for(const subcommand of commands) {
-            subcommand.parent = this;
+            subcommand.setParent(this);
+            this.data.addSubcommand(subcommand.data);
         }
         this.subcommands = commands;
     }
 
+    /**
+     * Add an array of slashcommand groups.
+     * @param  {SlashCommand.SubcommandGroup} groups
+     */
     addSubcommandGroups(...groups) {
         for(const group of groups) {
-            for(const subcommand of group.subcommands) {
-                subcommand.parent = this;
-            }
+            // Adds subcommand group data to base builder
+            this.data.addSubcommandGroup(group.data);
+            // Sets each subcommands parent
+            group.subcommands.forEach((subcommand) => subcommand.setParent(this));
         }
         this.subcommandGroups = groups;
     }
@@ -42,6 +57,7 @@ module.exports = SlashCommand;
 ((SlashCommand) => {
     /**
      * SlashCommand Subcommand
+     * @since v3.0.0
      */
     class Subcommand extends BaseApplicationCommand {
         parent;
@@ -50,7 +66,7 @@ module.exports = SlashCommand;
          * Gets the parent SlashCommand of the Subcommand.
          * @returns {SlashCommand}
          */
-        set parent(parent) {
+        setParent(parent) {
             this.parent = parent;
         }
     }
@@ -58,19 +74,37 @@ module.exports = SlashCommand;
 
     /**
      * SlashCommand SubcommandGroup
+     * @since v3.0.1
      */
     class SubcommandGroup extends BaseApplicationCommand {
-        subcommands;
 
-        constructor(data, subcommands) {
+        constructor(data) {
             super(data);
-            this.subcommands = subcommands;
+
+            /**
+             * Array of subcommands
+             * @type {SlashCommand.Subcommand[]}
+             */
+            this.subcommands = Array.of();
+        }
+
+        /**
+         * Add a set of subcommands to the subcommand group
+         * @param {SlashCommand.Subcommand} subcommands
+         * @returns {SubcommandGroup}
+         */
+        addSubcommands(...subcommands) {
+            for(const subcommand of subcommands) {
+                this.data.addSubcommand(subcommand.data);
+                this.subcommands.push(subcommand);
+            }
+            return this;
         }
 
         static of(data, ...subcommands) {
             if (data === null) throw new Error("SubcommandGroup data cannot be null");
             if (subcommands === null || subcommands.length === 0) throw new Error("Subcommands cannot be empty");
-            return new SubcommandGroup(data, subcommands);
+            return new SubcommandGroup(data).addSubcommands(...subcommands);
         }
     }
     SlashCommand.SubcommandGroup = SubcommandGroup;

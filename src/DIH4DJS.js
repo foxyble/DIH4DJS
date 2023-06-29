@@ -51,23 +51,25 @@ class DIH4DJS extends EventEmitter {
 
         this._validateOptions();
 
-        /**
-         * Interface to add, remove and update commands.
-         * @type {QueueManager}
-         */
-        this.queue = new QueueManager(this);
-
-        /**
-         * Interface to manage individual interactions.
-         * @type {InteractionManager}
-         */
-        this.interactionManager = new InteractionManager(this);
-
         try {
+            /**
+             * Interface to manage individual interactions.
+             * @type {InteractionManager}
+             */
+            this.interactionManager = new InteractionManager(this);
+
             // Starts DIH4DJS
             void this.start0();
+
+            /**
+             * Interface to add, remove and update commands.
+             * @type {QueueManager}
+             */
+            this.queue = new QueueManager(this);
         } catch (err) {
+            // Log error
             console.log(err);
+            // Exit
             process.exit(0);
         }
     }
@@ -84,9 +86,7 @@ class DIH4DJS extends EventEmitter {
         this.clientId = await this.queue.fetchBotUser().id;
 
         // Set default listeners.
-        this.options.strategy.addListeners('./lib/events/');
-
-        // TODO: Start Queue
+        this.options.strategy.addListeners('./src/events/');
     }
 
     /**

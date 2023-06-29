@@ -1,6 +1,6 @@
 'use strict';
 
-const {SlashCommand} = require("../../lib");
+const {SlashCommand} = require("../../src");
 const {SlashCommandSubcommandBuilder} = require("discord.js");
 
 class TestSubCommand extends SlashCommand.Subcommand {
