@@ -1,1 +1,0 @@
-const { DIH4DJSOptions } = require('../');

@@ -1,30 +1,46 @@
 {
+  "$schema": "https://json.schemastore.org/package.json",
   "name": "dih4djs",
-  "version": "3.1.0",
-  "description": "Interaction handler for the discord.js library",
-  "author": "pinkuth",
-  "license": "Apache-2.0",
-  "main": "src/index.js",
-  "types": "./typings/index.d.ts",
+  "version": "1.0.0",
+  "description": "",
   "scripts": {
-    "test:single": "node test/index.test.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "homepage": "https://github.com/pinkuth/DIH4DJS#readme",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "directories": {
+    "lib": "src",
+    "test": "test"
+  },
+  "files": [
+    "src",
+    "typings"
+  ],
+  "contributors": [
+    "Noah <n.soppelsa@skulkstudio.com>"
+  ],
+  "license": "Apache-2.0",
+  "keywords": [
+    "discord",
+    "interaction-handler",
+    "discordapp"
+  ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pinkuth/DIH4DJS.git"
+    "url": "https://github.com/SkulkStudio/DIH4DJS.git"
   },
   "bugs": {
-    "url": "https://github.com/pinkuth/DIH4DJS/issues"
+    "url": "https://github.com/SkulkStudio/DIH4DJS/issues"
   },
   "dependencies": {
-    "discord.js": "^14.11.0"
+    "discord.js": "^14.14.1"
   },
-  "keywords": [
-    "discordjs-command-handler",
-    "discordjs-interaction-handler",
-    "slashcommands",
-    "contextcommands"
-  ],
-  "packageManager": "yarn@1.22.19"
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "eslint": "^9.1.1",
+    "typescript": "^5.4.5"
+  },
+  "engines": {
+    "node": ">=18.18.2"
+  }
 }
