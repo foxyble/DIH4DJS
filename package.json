@@ -1,15 +1,23 @@
 {
   "name": "dih4djs",
-  "version": "1.1.1",
+  "version": "2.0.0.alpha1",
   "description": "interaction handler for the discord.js library",
-  "scripts": {
-    "test": "node ./__tests__/index.test.js",
-    "build": "rimraf ./source && tsc"
-  },
   "main": "./source/index.js",
+  "files": [
+    "src"
+  ],
+  "license": "Apache-2.0",
+  "author": "foxyble",
+  "contributors": [
+    "Noah Soppelsa (n.soppelsa@foxyble.com)"
+  ],
+  "homepage": "https://github.com/foxyble/DIH4DJS#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OoP1nk/DIH4DJS.git"
+    "url": "git+https://github.com/foxyble/DIH4DJS.git"
+  },
+  "bugs": {
+    "url": "https://github.com/foxyble/DIH4DJS/issues"
   },
   "keywords": [
     "discord.js",
@@ -21,20 +29,7 @@
     "contextcommands",
     "handler"
   ],
-  "author": "OoP1nk",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/OoP1nk/DIH4DJS/issues"
-  },
-  "homepage": "https://github.com/OoP1nk/DIH4DJS#readme",
   "dependencies": {
-    "chalk": "^4.1.2",
-    "discord.js": "^14.6.0"
-  },
-  "devDependencies": {
-    "@types/node": "^18.11.9",
-    "dotenv": "^16.0.3",
-    "rimraf": "^3.0.2",
-    "typescript": "^4.8.4"
+    "discord.js": "^14.16.2"
   }
 }
