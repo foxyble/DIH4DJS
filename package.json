@@ -30,6 +30,7 @@
     "handler"
   ],
   "dependencies": {
+    "discord-api-types": "^0.37.100",
     "discord.js": "^14.16.2"
   }
 }

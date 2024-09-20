@@ -15,20 +15,34 @@
  */
 'use strict';
 
+const { Client, BaseInteraction } = require('discord.js');
+
 /**
- * Main entry point for registering a DIH4DJS instance.
+ * Represents and application command.
+ * @abstract
  */
-class DIH4DJS {
+class BaseApplicationCommand {
 
     /**
-     * If sharding manager is used
-     * @type {string}
+     * Used to instantiate a new ApplicationCommand instance.
+     *
+     * TODO: Add BaseApplicationCommandOptions
+     * @param {T} builder
+     * @param {{}} options
      */
-    isSharded = process.env.SHARDING_MANAGER;
-
-    constructor(options) {
-
+    constructor(builder, options) {
+        this.builder = builder;
+        this.options = options;
     }
+
+    /**
+     * Runs when the command gets executed.
+     *
+     * @param {Client} client
+     * @param {BaseInteraction} interaction
+     * @abstract
+     */
+    onExecute(client, interaction) {}
 }
 
-module.exports = DIH4DJS;
+module.exports = BaseApplicationCommand;
